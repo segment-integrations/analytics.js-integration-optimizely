@@ -1,0 +1,20 @@
+{
+  "name": "analytics.js-integration-optimizely",
+  "repo": "segment-integrations/analytics.js-integration-optimizely",
+  "description": "The Optimizely analytics.js integration.",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "dependencies": {
+    "component/each": "0.0.1",
+    "ndhoule/foldl": "1.0.1",
+    "segmentio/analytics.js-integration": "0.3.x",
+    "segmentio/global-queue": "0.0.2",
+    "timoxley/next-tick": "0.0.2"
+  },
+  "development": {
+    "segmentio/analytics.js": "*",
+    "segmentio/clear-env": "0.2.x",
+    "segmentio/analytics.js-integration-tester": "1.4.x"
+  }
+}
