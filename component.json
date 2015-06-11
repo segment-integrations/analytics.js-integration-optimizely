@@ -7,7 +7,7 @@
   "main": "lib/index.js",
   "dependencies": {
     "component/each": "0.0.1",
-    "ndhoule/foldl": "1.0.1",
+    "ndhoule/foldl": "^1.0.3",
     "segmentio/analytics.js-integration": "0.3.x",
     "segmentio/global-queue": "0.0.2",
     "timoxley/next-tick": "0.0.2"
