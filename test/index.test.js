@@ -1,5 +1,5 @@
 
-var Analytics = require('analytics.js').constructor;
+var Analytics = require('analytics.js-core').constructor;
 var sandbox = require('clear-env');
 var tester = require('analytics.js-integration-tester');
 var tick = require('next-tick');
