@@ -146,15 +146,27 @@ describe('Optimizely', function() {
         analytics.called(window.optimizely.push, ['trackEvent', 'event', {}]);
       });
 
-      it('should send an event and properties', function() {
+      it('shouldn\'t send properties it can\'t process', function() {
         analytics.track('event', { property: true });
-        analytics.called(window.optimizely.push, ['trackEvent', 'event', {
-          property: true
-        }]);
+        analytics.called(window.optimizely.push, ['trackEvent', 'event', {}]);
       });
 
       it('should change revenue to cents', function() {
         analytics.track('event', { revenue: 9.99 });
+        analytics.called(window.optimizely.push, ['trackEvent', 'event', {
+          revenue: 999
+        }]);
+      });
+
+      it('should fallback to total if revenue isn\'t on the call', function() {
+        analytics.track('event', { total: 9.99 });
+        analytics.called(window.optimizely.push, ['trackEvent', 'event', {
+          revenue: 999
+        }]);
+      });
+
+      it('should fallback to value if revenue and total aren\'t on the call', function() {
+        analytics.track('event', { value: 9.99 });
         analytics.called(window.optimizely.push, ['trackEvent', 'event', {
           revenue: 999
         }]);
@@ -168,27 +180,12 @@ describe('Optimizely', function() {
 
       it('should send an event for a named page', function() {
         analytics.page('Home');
-        analytics.called(window.optimizely.push, ['trackEvent', 'Viewed Home Page', {
-          name: 'Home',
-          path: window.location.pathname,
-          referrer: document.referrer,
-          title: document.title,
-          search: window.location.search,
-          url: window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + window.location.pathname + window.location.search
-        }]);
+        analytics.called(window.optimizely.push, ['trackEvent', 'Viewed Home Page', {}]);
       });
 
       it('should send an event for a named and categorized page', function() {
         analytics.page('Blog', 'New Integration');
-        analytics.called(window.optimizely.push, ['trackEvent', 'Viewed Blog New Integration Page', {
-          category: 'Blog',
-          name: 'New Integration',
-          path: window.location.pathname,
-          referrer: document.referrer,
-          title: document.title,
-          search: window.location.search,
-          url: window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + window.location.pathname + window.location.search
-        }]);
+        analytics.called(window.optimizely.push, ['trackEvent', 'Viewed Blog New Integration Page', {}]);
       });
     });
   });
