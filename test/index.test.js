@@ -8,7 +8,7 @@ var Optimizely = require('../lib/');
 describe('Optimizely', function() {
   var analytics;
   var optimizely;
-  var options = { listen: false };
+  var options = { listen: false, nonInteraction: false };
 
   beforeEach(function() {
     analytics = new Analytics();
@@ -118,6 +118,21 @@ describe('Optimizely', function() {
     it('should send active experiments', function(done) {
       tick(function() {
         analytics.called(analytics.track, 'Experiment Viewed', {
+          experimentId: 0,
+          experimentName: 'Test',
+          variationId: 123,
+          variationName: 'Variation1' },
+          { context: { integration: { name: 'optimizely', version: '1.0.0' } }
+        });
+        done();
+      });
+    });
+
+    it('should send active experiments with nonInteraction when flagged', function(done) {
+      optimizely.options.nonInteraction = true;
+      tick(function() {
+        analytics.called(analytics.track, 'Experiment Viewed', {
+          nonInteraction: 1,
           experimentId: 0,
           experimentName: 'Test',
           variationId: 123,
