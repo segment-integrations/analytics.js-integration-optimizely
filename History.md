@@ -1,4 +1,10 @@
 
+1.1.0 / 2015-09-08
+==================
+
+  * update properties on trackEvent and add revenue fallback
+  * add nonInteraction flag for roots/listen event
+
 1.0.4 / 2015-06-30
 ==================
 
