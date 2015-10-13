@@ -1,4 +1,9 @@
 
+1.1.1 / 2015-10-13
+==================
+
+  * adding support for multivariate experiments closes #2
+
 1.1.0 / 2015-09-08
 ==================
 
