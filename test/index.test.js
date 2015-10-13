@@ -18,11 +18,12 @@ describe('Optimizely', function() {
     analytics.add(optimizely);
 
     window.optimizely.data = {
-      experiments: { 0: { name: 'Test' } },
+      experiments: { 0: { name: 'Test' }, 1: { name: 'MultiVariate Test' } },
+      sections: { 1: { name: 'Section 1', variation_ids: [123, 456, 789] } },
       state: {
         activeExperiments: [0],
-        variationNamesMap: { 0: 'Variation1' },
-        variationIdsMap: { 0: [123] }
+        variationNamesMap: { 0: 'Variation1', 1: 'Variation2' },
+        variationIdsMap: { 0: [123], 1: [123, 456, 789] }
       }
     };
   });
@@ -99,7 +100,8 @@ describe('Optimizely', function() {
       analytics.page();
       tick(function() {
         analytics.called(analytics.identify, {
-          'Experiment: Test': 'Variation1'
+          'Experiment: Test': 'Variation1',
+          'Experiment: MultiVariate Test': 'Variation2'
         });
         done();
       });
@@ -122,6 +124,35 @@ describe('Optimizely', function() {
           experimentName: 'Test',
           variationId: 123,
           variationName: 'Variation1' },
+          { context: { integration: { name: 'optimizely', version: '1.0.0' } }
+        });
+        done();
+      });
+    });
+
+    it('should send active multiVariate experiments', function(done) {
+      window.optimizely.data.state.activeExperiments = [1];
+      tick(function() {
+        analytics.called(analytics.track, 'Experiment Viewed', {
+          sectionName: 'Section 1',
+          experimentId: 1,
+          experimentName: 'MultiVariate Test',
+          variationId: '123,456,789',
+          variationName: 'Variation2' },
+          { context: { integration: { name: 'optimizely', version: '1.0.0' } }
+        });
+        done();
+      });
+    });
+
+    it('shouldn\'t send inactive multiVariate experiments', function(done) {
+      tick(function() {
+        analytics.didNotCall(analytics.track, 'Experiment Viewed', {
+          sectionName: 'Section 1',
+          experimentId: 1,
+          experimentName: 'MultiVariate Test',
+          variationId: '123,456,789',
+          variationName: 'Variation2' },
           { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
         done();
