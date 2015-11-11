@@ -211,10 +211,10 @@ describe('Optimizely', function() {
         }]);
       });
 
-      it('should fallback to value if revenue and total aren\'t on the call', function() {
-        analytics.track('event', { value: 9.99 });
+      it('should not proxy value to revenue', function() {
+        analytics.track('event', { value: 13 });
         analytics.called(window.optimizely.push, ['trackEvent', 'event', {
-          revenue: 999
+          value: 13
         }]);
       });
     });
