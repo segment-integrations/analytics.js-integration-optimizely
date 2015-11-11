@@ -203,20 +203,6 @@ describe('Optimizely', function() {
           revenue: 999
         }]);
       });
-
-      it('should fallback to total if revenue isn\'t on the call', function() {
-        analytics.track('event', { total: 9.99 });
-        analytics.called(window.optimizely.push, ['trackEvent', 'event', {
-          revenue: 999
-        }]);
-      });
-
-      it('should not proxy value to revenue', function() {
-        analytics.track('event', { value: 13 });
-        analytics.called(window.optimizely.push, ['trackEvent', 'event', {
-          value: 13
-        }]);
-      });
     });
 
     describe('#page', function() {
