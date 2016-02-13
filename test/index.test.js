@@ -23,7 +23,12 @@ describe('Optimizely', function() {
       state: {
         activeExperiments: [0],
         variationNamesMap: { 0: 'Variation1', 1: 'Variation2' },
-        variationIdsMap: { 0: [123], 1: [123, 456, 789] }
+        variationIdsMap: { 0: [123], 1: [123, 456, 789] },
+        redirectExperiment: {
+          variationId: '3954911059',
+          experimentId: '3944305104',
+          referrer: ''
+        }
       }
     };
   });
@@ -130,6 +135,7 @@ describe('Optimizely', function() {
       });
     });
 
+
     it('should send active multiVariate experiments', function(done) {
       window.optimizely.data.state.activeExperiments = [1];
       tick(function() {
@@ -140,6 +146,25 @@ describe('Optimizely', function() {
           variationId: '123,456,789',
           variationName: 'Variation2' },
           { context: { integration: { name: 'optimizely', version: '1.0.0' } }
+        });
+        done();
+      });
+    });
+
+    it('should send redirect experiment', function(done) {
+      tick(function() {
+        analytics.called(analytics.track, 'Experiment Viewed', {
+          experimentId: 0,
+          experimentName: 'Test',
+          variationId: 123,
+          variationName: 'Variation1' },
+          { context: { integration: { name: 'optimizely', version: '1.0.0' } }
+        });
+        analytics.called(analytics.track, 'Experiment Viewed', {
+          experimentId: '3944305104',
+          variationId: '3954911059',
+          referrer: ''
+          }, { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
         done();
       });
@@ -158,6 +183,7 @@ describe('Optimizely', function() {
         done();
       });
     });
+
 
     it('should send active experiments with nonInteraction when flagged', function(done) {
       optimizely.options.nonInteraction = true;
