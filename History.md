@@ -1,4 +1,9 @@
 
+1.1.3 / 2016-02-23
+==================
+
+  * support manual/custom activations aka redirect exp
+
 1.1.2 / 2015-10-21
 ==================
 
