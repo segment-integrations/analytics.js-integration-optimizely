@@ -260,16 +260,5 @@ describe('Optimizely', function() {
         analytics.called(window.optimizely.push, ['trackEvent', 'Viewed Blog New Integration Page', {}]);
       });
     });
-
-    describe('#identify', function() {
-      beforeEach(function() {
-        analytics.stub(window.optimizely, 'push');
-      });
-
-      it('should send a user for an identify', function() {
-        analytics.identify('foo');
-        analytics.called(window.optimizely.push, ['setUserId', 'foo']);
-      });
-    });
   });
 });
