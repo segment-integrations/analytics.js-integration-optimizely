@@ -49,6 +49,7 @@ describe('Optimizely', function() {
 
     describe('#initialize defaults', function() {
       beforeEach(function(done) {
+        analytics.stub(window.optimizely, 'push');
         analytics.once('ready', done);
         analytics.initialize();
         analytics.page();
@@ -66,6 +67,13 @@ describe('Optimizely', function() {
           analytics.didNotCall(optimizely.roots);
           done();
         });
+      });
+
+      it('should flag source of integration', function() {
+        analytics.called(window.optimizely.push, [{
+          type: 'integration',
+          OAuthClientId: '5360906403'
+        }]);
       });
     });
 
