@@ -2,7 +2,7 @@
   "name": "analytics.js-integration-optimizely",
   "repo": "segment-integrations/analytics.js-integration-optimizely",
   "description": "The Optimizely analytics.js integration.",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "license": "MIT",
   "main": "lib/index.js",
   "dependencies": {

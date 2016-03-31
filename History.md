@@ -1,4 +1,9 @@
 
+1.1.6 / 2016-03-31
+==================
+
+  * Implementing a method to track integration usage
+
 1.1.5 / 2016-03-23
 ==================
 
