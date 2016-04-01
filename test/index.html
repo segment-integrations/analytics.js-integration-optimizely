@@ -4,7 +4,9 @@
     <title>integrations tests</title>
     <link rel="stylesheet" href="/node_modules/mocha/mocha.css">
     <!-- https://segment.com/docs/integrations/optimizely/#with-javascript -->
-    <script src="//cdn.optimizely.com/js/170430035.js"></script>
+    <!-- <script src="//cdn.optimizely.com/js/170430035.js"></script> -->
+    <script>window['optimizely'] = [];</script>
+
   </head>
   <body>
     <div id="mocha"></div>
