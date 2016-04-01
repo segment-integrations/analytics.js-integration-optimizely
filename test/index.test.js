@@ -7,7 +7,7 @@ var Optimizely = require('../lib/');
 
 var mockOptimizelyDataObject = function() {
   window.optimizely.data = {
-    experiments: { 
+    experiments: {
       0: { name: 'Test' },
       1: { name: 'MultiVariate Test' },
       2: { name: 'Inactive Test' },
@@ -15,8 +15,8 @@ var mockOptimizelyDataObject = function() {
     variations: { 22: { name: 'Redirect Variation' }},
     sections: { 1: { name: 'Section 1', variation_ids: [123, 456, 789] } },
     state: {
-      activeExperiments: [0,1],
-      variationNamesMap: { 
+      activeExperiments: [0, 1],
+      variationNamesMap: {
         0: 'Variation1',
         1: 'Variation2',
         2: 'Inactive Variation',
