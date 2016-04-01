@@ -11,7 +11,7 @@ var mockOptimizelyDataObject = function() {
     variations: { 22: { name: 'Redirect Variation' }},
     sections: { 1: { name: 'Section 1', variation_ids: [123, 456, 789] } },
     state: {
-      activeExperiments: [0],
+      activeExperiments: [0,1],
       variationNamesMap: { 0: 'Variation1', 1: 'Variation2' },
       variationIdsMap: { 0: [123], 1: [123, 456, 789] },
       redirectExperiment: {
@@ -151,7 +151,6 @@ describe('Optimizely', function() {
         done();
       });
     });
-
 
     it('should send active multiVariate experiments', function(done) {
       window.optimizely.data.state.activeExperiments = [1];
