@@ -15,8 +15,8 @@ var mockOptimizelyDataObject = function() {
       variationNamesMap: { 0: 'Variation1', 1: 'Variation2' },
       variationIdsMap: { 0: [123], 1: [123, 456, 789] },
       redirectExperiment: {
-        variationId: 11,
-        experimentId: 22,
+        variationId: 22,
+        experimentId: 11,
         referrer: ''
       }
     }
@@ -178,9 +178,9 @@ describe('Optimizely', function() {
           { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
         analytics.called(analytics.track, 'Experiment Viewed', {
-          experimentId: '11',
+          experimentId: 22,
           experimentName: 'Redirect Test',
-          variationId: '22',
+          variationId: 11,
           variationName: 'Redirect Variation',ee
           referrer: ''
           }, { context: { integration: { name: 'optimizely', version: '1.0.0' } }
