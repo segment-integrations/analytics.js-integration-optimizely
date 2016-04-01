@@ -70,10 +70,10 @@ describe('Optimizely', function() {
       });
 
       it('should flag source of integration', function() {
-        analytics.called(window.optimizely.push, {
+        analytics.called(window.optimizely.push, [{
           type: 'integration',
           OAuthClientId: '5360906403'
-        });
+        }]);
       });
     });
 
