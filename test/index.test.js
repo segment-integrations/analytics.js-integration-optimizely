@@ -112,6 +112,7 @@ describe('Optimizely', function() {
       analytics.initialize();
       analytics.page();
       tick(function() {
+        window.console.log(window.optimizely.data);
         analytics.called(analytics.identify, {
           'Experiment: Test': 'Variation1',
           'Experiment: MultiVariate Test': 'Variation2'
