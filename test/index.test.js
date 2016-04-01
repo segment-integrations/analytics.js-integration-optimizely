@@ -115,12 +115,10 @@ describe('Optimizely', function() {
 
     it('should replay variation traits', function(done) {
       optimizely.options.variations = true;
-      window.console.log(window.optimizely.data.state.activeExperiments);
       analytics.initialize();
       mockOptimizelyDataObject();
       analytics.page();
       tick(function() {
-        window.console.log(window.optimizely.data.state.activeExperiments);
         analytics.called(analytics.identify, {
           'Experiment: Test': 'Variation1',
           'Experiment: MultiVariate Test': 'Variation2'
@@ -136,7 +134,6 @@ describe('Optimizely', function() {
       optimizely.options.listen = true;
       analytics.once('ready', done);
       analytics.initialize();
-      mockOptimizelyDataObject();
       analytics.page();
     });
 
