@@ -7,8 +7,8 @@ var Optimizely = require('../lib/');
 
 var mockOptimizelyDataObject = function() {
   window.optimizely.data = {
-    experiments: { 0: { name: 'Test' }, 1: { name: 'MultiVariate Test' }, 11: { name: 'Redirect Test' }},
-    variations: { 22: {name: 'Redirect Variation' }},
+    experiments: { 0: { name: 'Test' }, 1: { name: 'MultiVariate Test' }, 11: { name: 'Redirect Test' } },
+    variations: { 22: { name: 'Redirect Variation' }},
     sections: { 1: { name: 'Section 1', variation_ids: [123, 456, 789] } },
     state: {
       activeExperiments: [0],
@@ -181,7 +181,7 @@ describe('Optimizely', function() {
           experimentId: '11',
           experimentName: 'Redirect Test',
           variationId: '22',
-          variationName: 'Redirect Variation',
+          variationName: 'Redirect Variation',ee
           referrer: ''
           }, { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
