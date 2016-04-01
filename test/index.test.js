@@ -70,10 +70,10 @@ describe('Optimizely', function() {
       });
 
       it('should flag source of integration', function() {
-        analytics.called(window.optimizely.push, [{
+        analytics.called(window.optimizely.push, {
           type: 'integration',
           OAuthClientId: '5360906403'
-        }]);
+        });
       });
     });
 
@@ -111,6 +111,8 @@ describe('Optimizely', function() {
       optimizely.options.variations = true;
       analytics.initialize();
       analytics.page();
+      window.console.log('test');
+      window.console.log(window.optimizely);
       tick(function() {
         analytics.called(analytics.identify, {
           'Experiment: Test': 'Variation1',
@@ -223,6 +225,7 @@ describe('Optimizely', function() {
 
       it('should send an event', function() {
         analytics.track('event');
+
         analytics.called(window.optimizely.push, ['trackEvent', 'event', {}]);
       });
 
