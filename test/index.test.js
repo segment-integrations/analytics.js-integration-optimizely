@@ -152,7 +152,7 @@ describe('Optimizely', function() {
         analytics.called(analytics.track, 'Experiment Viewed', {
           experimentId: 0,
           experimentName: 'Test',
-          variationId: 123,
+          variationId: '123',
           variationName: 'Variation1' },
           { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
@@ -179,7 +179,7 @@ describe('Optimizely', function() {
         analytics.called(analytics.track, 'Experiment Viewed', {
           experimentId: 22,
           experimentName: 'Redirect Test',
-          variationId: 11,
+          variationId: '11',
           variationName: 'Redirect Variation',
           referrer: ''
           }, { context: { integration: { name: 'optimizely', version: '1.0.0' } }
@@ -188,14 +188,13 @@ describe('Optimizely', function() {
       });
     });
 
-    it('shouldn\'t send inactive multiVariate experiments', function(done) {
+    it('shouldn\'t send inactive experiments', function(done) {
       tick(function() {
         analytics.didNotCall(analytics.track, 'Experiment Viewed', {
-          sectionName: 'Section 1',
-          experimentId: 1,
-          experimentName: 'MultiVariate Test',
-          variationId: '123,456,789',
-          variationName: 'Variation2' },
+          experimentId: 2,
+          experimentName: 'Inactive Test',
+          variationId: '44',
+          variationName: 'Inactive Variation' },
           { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
         done();
