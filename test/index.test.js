@@ -7,15 +7,16 @@ var Optimizely = require('../lib/');
 
 var mockOptimizelyDataObject = function() {
   window.optimizely.data = {
-    experiments: { 0: { name: 'Test' }, 1: { name: 'MultiVariate Test' } },
+    experiments: { 0: { name: 'Test' }, 1: { name: 'MultiVariate Test' } 11: {name: 'Redirect Test' }},
+    variations: { 22: {name: 'Redirect Variation' }},
     sections: { 1: { name: 'Section 1', variation_ids: [123, 456, 789] } },
     state: {
       activeExperiments: [0],
       variationNamesMap: { 0: 'Variation1', 1: 'Variation2' },
       variationIdsMap: { 0: [123], 1: [123, 456, 789] },
       redirectExperiment: {
-        variationId: '3954911059',
-        experimentId: '3944305104',
+        variationId: '11',
+        experimentId: '22',
         referrer: ''
       }
     }
