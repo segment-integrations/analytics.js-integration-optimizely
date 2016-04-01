@@ -7,13 +7,21 @@ var Optimizely = require('../lib/');
 
 var mockOptimizelyDataObject = function() {
   window.optimizely.data = {
-    experiments: { 0: { name: 'Test' }, 1: { name: 'MultiVariate Test' }, 11: { name: 'Redirect Test' } },
+    experiments: { 
+      0: { name: 'Test' },
+      1: { name: 'MultiVariate Test' },
+      2: { name: 'Inactive Test' },
+      11: { name: 'Redirect Test' } },
     variations: { 22: { name: 'Redirect Variation' }},
     sections: { 1: { name: 'Section 1', variation_ids: [123, 456, 789] } },
     state: {
       activeExperiments: [0,1],
-      variationNamesMap: { 0: 'Variation1', 1: 'Variation2' },
-      variationIdsMap: { 0: [123], 1: [123, 456, 789] },
+      variationNamesMap: { 
+        0: 'Variation1',
+        1: 'Variation2',
+        2: 'Inactive Variation',
+        11: 'Redirect Variation' },
+      variationIdsMap: { 0: [123], 1: [123, 456, 789], 11: [22], 2: [44] },
       redirectExperiment: {
         variationId: 22,
         experimentId: 11,
@@ -153,7 +161,6 @@ describe('Optimizely', function() {
     });
 
     it('should send active multiVariate experiments', function(done) {
-      window.optimizely.data.state.activeExperiments = [1];
       tick(function() {
         analytics.called(analytics.track, 'Experiment Viewed', {
           sectionName: 'Section 1',
@@ -169,13 +176,6 @@ describe('Optimizely', function() {
 
     it('should send redirect experiment', function(done) {
       tick(function() {
-        analytics.called(analytics.track, 'Experiment Viewed', {
-          experimentId: 0,
-          experimentName: 'Test',
-          variationId: 123,
-          variationName: 'Variation1' },
-          { context: { integration: { name: 'optimizely', version: '1.0.0' } }
-        });
         analytics.called(analytics.track, 'Experiment Viewed', {
           experimentId: 22,
           experimentName: 'Redirect Test',
