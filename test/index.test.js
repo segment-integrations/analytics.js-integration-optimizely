@@ -111,7 +111,7 @@ describe('Optimizely', function() {
       optimizely.options.variations = true;
       analytics.initialize();
       analytics.page();
-      window.console.log("test");
+      window.console.log('test');
       window.console.log(window.optimizely);
       tick(function() {
         analytics.called(analytics.identify, {
