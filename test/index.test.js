@@ -117,7 +117,7 @@ describe('Optimizely', function() {
             referrer: ''
           }
         }
-      };      
+      };
       analytics.stub(analytics, 'identify');
     });
 
