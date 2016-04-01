@@ -12,7 +12,7 @@ var mockOptimizelyDataObject = function() {
       1: { name: 'MultiVariate Test' },
       2: { name: 'Inactive Test' },
       11: { name: 'Redirect Test' } },
-    variations: { 22: { name: 'Redirect Variation' }},
+    variations: { 22: { name: 'Redirect Variation' } },
     sections: { 1: { name: 'Section 1', variation_ids: [123, 456, 789] } },
     state: {
       activeExperiments: [0, 1],
@@ -129,8 +129,10 @@ describe('Optimizely', function() {
       analytics.page();
       tick(function() {
         analytics.called(analytics.identify, {
-          'Experiment: Test': 'Variation1',
-          'Experiment: MultiVariate Test': 'Variation2'
+          "Experiment: Test": "Variation1",
+          "Experiment: MultiVariate Test": "Variation2",
+          "Experiment: Inactive Test": "Inactive Variation",
+          "Experiment: Redirect Test": "Redirect Variation"
         });
         done();
       });
