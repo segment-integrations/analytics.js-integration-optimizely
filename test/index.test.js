@@ -22,7 +22,6 @@ describe('Optimizely', function() {
       sections: { 1: { name: 'Section 1', variation_ids: [123, 456, 789] } },
       state: {
         activeExperiments: [0],
-        
         variationNamesMap: { 0: 'Variation1', 1: 'Variation2' },
         variationIdsMap: { 0: [123], 1: [123, 456, 789] },
         redirectExperiment: {
@@ -50,6 +49,7 @@ describe('Optimizely', function() {
 
     describe('#initialize defaults', function() {
       beforeEach(function(done) {
+        analytics.stub(window.optimizely, 'push');
         analytics.once('ready', done);
         analytics.initialize();
         analytics.page();
@@ -67,6 +67,13 @@ describe('Optimizely', function() {
           analytics.didNotCall(optimizely.roots);
           done();
         });
+      });
+
+      it('should flag source of integration', function() {
+        analytics.called(window.optimizely.push, [{
+          type: 'integration',
+          OAuthClientId: '5360906403'
+        }]);
       });
     });
 
