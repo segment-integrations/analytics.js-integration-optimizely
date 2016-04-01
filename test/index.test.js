@@ -134,6 +134,7 @@ describe('Optimizely', function() {
       optimizely.options.listen = true;
       analytics.once('ready', done);
       analytics.initialize();
+      mockOptimizelyDataObject();
       analytics.page();
     });
 
