@@ -181,7 +181,7 @@ describe('Optimizely', function() {
           experimentId: '11',
           experimentName: 'Redirect Test',
           variationId: '22',
-          variationName: 'Redirect Variation'
+          variationName: 'Redirect Variation',
           referrer: ''
           }, { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
