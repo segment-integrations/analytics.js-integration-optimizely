@@ -7,7 +7,7 @@ var Optimizely = require('../lib/');
 
 var mockOptimizelyDataObject = function() {
   window.optimizely.data = {
-    experiments: { 0: { name: 'Test' }, 1: { name: 'MultiVariate Test' } 11: {name: 'Redirect Test' }},
+    experiments: { 0: { name: 'Test' }, 1: { name: 'MultiVariate Test' }, 11: { name: 'Redirect Test' }},
     variations: { 22: {name: 'Redirect Variation' }},
     sections: { 1: { name: 'Section 1', variation_ids: [123, 456, 789] } },
     state: {
@@ -15,8 +15,8 @@ var mockOptimizelyDataObject = function() {
       variationNamesMap: { 0: 'Variation1', 1: 'Variation2' },
       variationIdsMap: { 0: [123], 1: [123, 456, 789] },
       redirectExperiment: {
-        variationId: '11',
-        experimentId: '22',
+        variationId: 11,
+        experimentId: 22,
         referrer: ''
       }
     }
@@ -178,8 +178,10 @@ describe('Optimizely', function() {
           { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
         analytics.called(analytics.track, 'Experiment Viewed', {
-          experimentId: '3944305104',
-          variationId: '3954911059',
+          experimentId: '11',
+          experimentName: 'Redirect Test',
+          variationId: '22',
+          variationName: 'Redirect Variation'
           referrer: ''
           }, { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
