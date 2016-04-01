@@ -129,10 +129,10 @@ describe('Optimizely', function() {
       analytics.page();
       tick(function() {
         analytics.called(analytics.identify, {
-          "Experiment: Test": "Variation1",
-          "Experiment: MultiVariate Test": "Variation2",
-          "Experiment: Inactive Test": "Inactive Variation",
-          "Experiment: Redirect Test": "Redirect Variation"
+          'Experiment: Test': 'Variation1',
+          'Experiment: MultiVariate Test': 'Variation2',
+          'Experiment: Inactive Test': 'Inactive Variation',
+          'Experiment: Redirect Test': 'Redirect Variation'
         });
         done();
       });
