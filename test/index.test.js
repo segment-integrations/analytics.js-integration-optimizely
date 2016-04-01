@@ -5,18 +5,7 @@ var tester = require('analytics.js-integration-tester');
 var tick = require('next-tick');
 var Optimizely = require('../lib/');
 
-describe('Optimizely', function() {
-  var analytics;
-  var optimizely;
-  var options = { listen: false, nonInteraction: false };
-
-  beforeEach(function() {
-    analytics = new Analytics();
-    optimizely = new Optimizely(options);
-    analytics.use(Optimizely);
-    analytics.use(tester);
-    analytics.add(optimizely);
-
+var mockOptimizelyDataObject = function() {
     window.optimizely.data = {
       experiments: { 0: { name: 'Test' }, 1: { name: 'MultiVariate Test' } },
       sections: { 1: { name: 'Section 1', variation_ids: [123, 456, 789] } },
@@ -31,6 +20,20 @@ describe('Optimizely', function() {
         }
       }
     };
+};
+
+describe('Optimizely', function() {
+  var analytics;
+  var optimizely;
+  var options = { listen: false, nonInteraction: false };
+
+  beforeEach(function() {
+    analytics = new Analytics();
+    optimizely = new Optimizely(options);
+    analytics.use(Optimizely);
+    analytics.use(tester);
+    analytics.add(optimizely);
+    mockOptimizelyDataObject();
   });
 
   afterEach(function() {
@@ -52,6 +55,7 @@ describe('Optimizely', function() {
         analytics.stub(window.optimizely, 'push');
         analytics.once('ready', done);
         analytics.initialize();
+        mockOptimizelyDataObject();
         analytics.page();
       });
 
@@ -81,6 +85,7 @@ describe('Optimizely', function() {
       it('should not call #replay if variations are disabled', function(done) {
          optimizely.options.variations = false;
          analytics.initialize();
+         mockOptimizelyDataObject();
          analytics.page();
          analytics.on('ready', tick(function() {
             analytics.didNotCall(optimizely.replay);
@@ -92,6 +97,7 @@ describe('Optimizely', function() {
       it('should call #roots if listen is enabled', function(done) {
         optimizely.options.listen = true;
         analytics.initialize();
+        mockOptimizelyDataObject();
         analytics.page();
         analytics.on('ready', tick(function() {
            analytics.called(optimizely.roots);
@@ -125,6 +131,7 @@ describe('Optimizely', function() {
       optimizely.options.variations = true;
       window.console.log(window.optimizely.data.state.activeExperiments);
       analytics.initialize();
+      mockOptimizelyDataObject();
       analytics.page();
       tick(function() {
         window.console.log(window.optimizely.data.state.activeExperiments);
@@ -143,6 +150,7 @@ describe('Optimizely', function() {
       optimizely.options.listen = true;
       analytics.once('ready', done);
       analytics.initialize();
+      mockOptimizelyDataObject();
       analytics.page();
     });
 
@@ -229,6 +237,7 @@ describe('Optimizely', function() {
     beforeEach(function(done) {
       analytics.once('ready', done);
       analytics.initialize();
+      mockOptimizelyDataObject();
       analytics.page();
     });
 
