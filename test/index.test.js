@@ -167,7 +167,7 @@ describe('Optimizely', function() {
     it('should send active multiVariate experiments', function(done) {
       window.optimizely.data.state.activeExperiments = [1];
       window.optimizely.data.state.redirectExperiment = undefined;
-      analytics.page();      
+      analytics.page();
       tick(function() {
         analytics.called(analytics.track, 'Experiment Viewed', {
           sectionName: 'Section 1',
@@ -183,7 +183,7 @@ describe('Optimizely', function() {
 
     it('should send redirect experiment', function(done) {
       window.optimizely.data.state.activeExperiments = [];
-      analytics.page();      
+      analytics.page();
       tick(function() {
         analytics.called(analytics.track, 'Experiment Viewed', {
           experimentId: 22,
