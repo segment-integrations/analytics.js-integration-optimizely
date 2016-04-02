@@ -186,9 +186,9 @@ describe('Optimizely', function() {
       analytics.page();
       tick(function() {
         analytics.called(analytics.track, 'Experiment Viewed', {
-          experimentId: 22,
+          experimentId: 11,
           experimentName: 'Redirect Test',
-          variationId: '11',
+          variationId: '22',
           variationName: 'Redirect Variation',
           referrer: ''
           }, { context: { integration: { name: 'optimizely', version: '1.0.0' } }
