@@ -211,7 +211,7 @@ describe('Optimizely', function() {
           nonInteraction: 1,
           experimentId: 0,
           experimentName: 'Test',
-          variationId: 123,
+          variationId: '123',
           variationName: 'Variation1' },
           { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
