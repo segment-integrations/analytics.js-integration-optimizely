@@ -146,10 +146,12 @@ describe('Optimizely', function() {
       analytics.once('ready', done);
       analytics.initialize();
       mockOptimizelyDataObject();
-      analytics.page();
     });
 
     it('should send active experiments', function(done) {
+      window.optimizely.data.state.activeExperiments = [0];
+      window.optimizely.data.state.redirectExperiment = undefined;
+      analytics.page();
       tick(function() {
         analytics.called(analytics.track, 'Experiment Viewed', {
           experimentId: 0,
@@ -163,6 +165,9 @@ describe('Optimizely', function() {
     });
 
     it('should send active multiVariate experiments', function(done) {
+      window.optimizely.data.state.activeExperiments = [1];
+      window.optimizely.data.state.redirectExperiment = undefined;
+      analytics.page();      
       tick(function() {
         analytics.called(analytics.track, 'Experiment Viewed', {
           sectionName: 'Section 1',
@@ -177,6 +182,8 @@ describe('Optimizely', function() {
     });
 
     it('should send redirect experiment', function(done) {
+      window.optimizely.data.state.activeExperiments = [];
+      analytics.page();      
       tick(function() {
         analytics.called(analytics.track, 'Experiment Viewed', {
           experimentId: 22,
