@@ -5,6 +5,32 @@ var tester = require('analytics.js-integration-tester');
 var tick = require('next-tick');
 var Optimizely = require('../lib/');
 
+var mockOptimizelyDataObject = function() {
+  window.optimizely.data = {
+    experiments: {
+      0: { name: 'Test' },
+      1: { name: 'MultiVariate Test' },
+      2: { name: 'Inactive Test' },
+      11: { name: 'Redirect Test' } },
+    variations: { 22: { name: 'Redirect Variation' } },
+    sections: { 1: { name: 'Section 1', variation_ids: [123, 456, 789] } },
+    state: {
+      activeExperiments: [0, 1],
+      variationNamesMap: {
+        0: 'Variation1',
+        1: 'Variation2',
+        2: 'Inactive Variation',
+        11: 'Redirect Variation' },
+      variationIdsMap: { 0: [123], 1: [123, 456, 789], 11: [22], 2: [44] },
+      redirectExperiment: {
+        variationId: 22,
+        experimentId: 11,
+        referrer: ''
+      }
+    }
+  };
+};
+
 describe('Optimizely', function() {
   var analytics;
   var optimizely;
@@ -16,21 +42,7 @@ describe('Optimizely', function() {
     analytics.use(Optimizely);
     analytics.use(tester);
     analytics.add(optimizely);
-
-    window.optimizely.data = {
-      experiments: { 0: { name: 'Test' }, 1: { name: 'MultiVariate Test' } },
-      sections: { 1: { name: 'Section 1', variation_ids: [123, 456, 789] } },
-      state: {
-        activeExperiments: [0],
-        variationNamesMap: { 0: 'Variation1', 1: 'Variation2' },
-        variationIdsMap: { 0: [123], 1: [123, 456, 789] },
-        redirectExperiment: {
-          variationId: '3954911059',
-          experimentId: '3944305104',
-          referrer: ''
-        }
-      }
-    };
+    mockOptimizelyDataObject();
   });
 
   afterEach(function() {
@@ -52,6 +64,7 @@ describe('Optimizely', function() {
         analytics.stub(window.optimizely, 'push');
         analytics.once('ready', done);
         analytics.initialize();
+        mockOptimizelyDataObject();
         analytics.page();
       });
 
@@ -70,10 +83,10 @@ describe('Optimizely', function() {
       });
 
       it('should flag source of integration', function() {
-        analytics.called(window.optimizely.push, [{
+        analytics.called(window.optimizely.push, {
           type: 'integration',
           OAuthClientId: '5360906403'
-        }]);
+        });
       });
     });
 
@@ -81,6 +94,7 @@ describe('Optimizely', function() {
       it('should not call #replay if variations are disabled', function(done) {
          optimizely.options.variations = false;
          analytics.initialize();
+         mockOptimizelyDataObject();
          analytics.page();
          analytics.on('ready', tick(function() {
             analytics.didNotCall(optimizely.replay);
@@ -92,6 +106,7 @@ describe('Optimizely', function() {
       it('should call #roots if listen is enabled', function(done) {
         optimizely.options.listen = true;
         analytics.initialize();
+        mockOptimizelyDataObject();
         analytics.page();
         analytics.on('ready', tick(function() {
            analytics.called(optimizely.roots);
@@ -110,11 +125,14 @@ describe('Optimizely', function() {
     it('should replay variation traits', function(done) {
       optimizely.options.variations = true;
       analytics.initialize();
+      mockOptimizelyDataObject();
       analytics.page();
       tick(function() {
         analytics.called(analytics.identify, {
           'Experiment: Test': 'Variation1',
-          'Experiment: MultiVariate Test': 'Variation2'
+          'Experiment: MultiVariate Test': 'Variation2',
+          'Experiment: Inactive Test': 'Inactive Variation',
+          'Experiment: Redirect Test': 'Redirect Variation'
         });
         done();
       });
@@ -127,15 +145,18 @@ describe('Optimizely', function() {
       optimizely.options.listen = true;
       analytics.once('ready', done);
       analytics.initialize();
-      analytics.page();
+      mockOptimizelyDataObject();
     });
 
     it('should send active experiments', function(done) {
+      window.optimizely.data.state.activeExperiments = [0];
+      window.optimizely.data.state.redirectExperiment = undefined;
+      analytics.page();
       tick(function() {
         analytics.called(analytics.track, 'Experiment Viewed', {
           experimentId: 0,
           experimentName: 'Test',
-          variationId: 123,
+          variationId: '123',
           variationName: 'Variation1' },
           { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
@@ -143,9 +164,10 @@ describe('Optimizely', function() {
       });
     });
 
-
     it('should send active multiVariate experiments', function(done) {
       window.optimizely.data.state.activeExperiments = [1];
+      window.optimizely.data.state.redirectExperiment = undefined;
+      analytics.page();
       tick(function() {
         analytics.called(analytics.track, 'Experiment Viewed', {
           sectionName: 'Section 1',
@@ -160,17 +182,14 @@ describe('Optimizely', function() {
     });
 
     it('should send redirect experiment', function(done) {
+      window.optimizely.data.state.activeExperiments = [];
+      analytics.page();
       tick(function() {
         analytics.called(analytics.track, 'Experiment Viewed', {
-          experimentId: 0,
-          experimentName: 'Test',
-          variationId: 123,
-          variationName: 'Variation1' },
-          { context: { integration: { name: 'optimizely', version: '1.0.0' } }
-        });
-        analytics.called(analytics.track, 'Experiment Viewed', {
-          experimentId: '3944305104',
-          variationId: '3954911059',
+          experimentId: 11,
+          experimentName: 'Redirect Test',
+          variationId: '22',
+          variationName: 'Redirect Variation',
           referrer: ''
           }, { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
@@ -178,14 +197,13 @@ describe('Optimizely', function() {
       });
     });
 
-    it('shouldn\'t send inactive multiVariate experiments', function(done) {
+    it('shouldn\'t send inactive experiments', function(done) {
       tick(function() {
         analytics.didNotCall(analytics.track, 'Experiment Viewed', {
-          sectionName: 'Section 1',
-          experimentId: 1,
-          experimentName: 'MultiVariate Test',
-          variationId: '123,456,789',
-          variationName: 'Variation2' },
+          experimentId: 2,
+          experimentName: 'Inactive Test',
+          variationId: '44',
+          variationName: 'Inactive Variation' },
           { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
         done();
@@ -200,7 +218,7 @@ describe('Optimizely', function() {
           nonInteraction: 1,
           experimentId: 0,
           experimentName: 'Test',
-          variationId: 123,
+          variationId: '123',
           variationName: 'Variation1' },
           { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
@@ -213,6 +231,7 @@ describe('Optimizely', function() {
     beforeEach(function(done) {
       analytics.once('ready', done);
       analytics.initialize();
+      mockOptimizelyDataObject();
       analytics.page();
     });
 
