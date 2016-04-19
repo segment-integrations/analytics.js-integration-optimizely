@@ -1,4 +1,10 @@
 
+1.1.8 / 2016-04-19
+==================
+
+  * Remove value and total tests
+  * Remove mapping of value to revenue
+
 1.1.7 / 2016-04-08
 ==================
 
