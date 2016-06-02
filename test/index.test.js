@@ -1,7 +1,8 @@
+'use strict';
 
-var Analytics = require('analytics.js-core').constructor;
-var sandbox = require('clear-env');
-var tester = require('analytics.js-integration-tester');
+var Analytics = require('@segment/analytics.js-core').constructor;
+var sandbox = require('@segment/clear-env');
+var tester = require('@segment/analytics.js-integration-tester');
 var tick = require('next-tick');
 var Optimizely = require('../lib/');
 
@@ -92,16 +93,16 @@ describe('Optimizely', function() {
 
     describe('#initialize on settings change', function() {
       it('should not call #replay if variations are disabled', function(done) {
-         optimizely.options.variations = false;
-         analytics.initialize();
-         mockOptimizelyDataObject();
-         analytics.page();
-         analytics.on('ready', tick(function() {
-            analytics.didNotCall(optimizely.replay);
-            done();
-          })
+        optimizely.options.variations = false;
+        analytics.initialize();
+        mockOptimizelyDataObject();
+        analytics.page();
+        analytics.on('ready', tick(function() {
+          analytics.didNotCall(optimizely.replay);
+          done();
+        })
          );
-       });
+      });
 
       it('should call #roots if listen is enabled', function(done) {
         optimizely.options.listen = true;
@@ -109,9 +110,9 @@ describe('Optimizely', function() {
         mockOptimizelyDataObject();
         analytics.page();
         analytics.on('ready', tick(function() {
-           analytics.called(optimizely.roots);
-           done();
-         })
+          analytics.called(optimizely.roots);
+          done();
+        })
         );
       });
     });
@@ -191,7 +192,7 @@ describe('Optimizely', function() {
           variationId: '22',
           variationName: 'Redirect Variation',
           referrer: ''
-          }, { context: { integration: { name: 'optimizely', version: '1.0.0' } }
+        }, { context: { integration: { name: 'optimizely', version: '1.0.0' } }
         });
         done();
       });
