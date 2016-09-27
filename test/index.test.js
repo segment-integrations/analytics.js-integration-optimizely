@@ -43,7 +43,11 @@ var mockOptimizelyDataObject = function() {
 describe('Optimizely', function() {
   var analytics;
   var optimizely;
-  var options = { listen: false, nonInteraction: false };
+  var options = {
+    listen: true,
+    variations: false,
+    nonInteraction: false
+  };
 
   beforeEach(function() {
     analytics = new Analytics();
@@ -67,12 +71,12 @@ describe('Optimizely', function() {
       analytics.stub(optimizely, 'sendClassicDataToSegment');
       analytics.stub(optimizely, 'sendNewDataToSegment');
       analytics.stub(optimizely, 'setEffectiveReferrer');
-      analytics.stub(window, 'initOptimizelyIntegration');
     });
 
     describe('#initialize', function() {
       beforeEach(function(done) {
         analytics.stub(window.optimizely, 'push');
+        analytics.stub(window, 'initOptimizelyIntegration');
         analytics.once('ready', done);
         analytics.initialize();
         mockOptimizelyDataObject();
@@ -80,7 +84,8 @@ describe('Optimizely', function() {
       });
 
       // FIXME
-      it.skip('should call initOptimizelyIntegration', function() {
+      it.only('should call initOptimizelyIntegration', function() {
+        console.log('boo', window.initOptimizelyIntegration);
         analytics.called(window.initOptimizelyIntegration, {
           referrerOverride: optimizely.setEffectiveReferrer,
           sendExperimentData: optimizely.sendClassicDataToSegment,
