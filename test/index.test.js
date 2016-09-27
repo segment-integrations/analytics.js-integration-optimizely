@@ -5,6 +5,10 @@ var sandbox = require('@segment/clear-env');
 var tester = require('@segment/analytics.js-integration-tester');
 var Optimizely = require('../lib/');
 
+/**
+ * Test account: han@segment.com
+ */
+
 var mockOptimizelyDataObject = function() {
   window.optimizely.data = {
     experiments: {
@@ -23,7 +27,7 @@ var mockOptimizelyDataObject = function() {
       activeExperiments: [0, 1],
       variationNamesMap: {
         0: 'Variation1',
-        1: ['Variation #123', 'Redirect Variation', 'Var 789'], // TODO: confirm this is valid data format
+        1: 'Variation #123, Redirect Variation, Var 789', // this is the data format
         2: 'Inactive Variation',
         11: 'Redirect Variation' },
       variationIdsMap: { 0: [123], 1: [123, 22, 789], 11: [22], 2: [44] },
