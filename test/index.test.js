@@ -3,7 +3,6 @@
 var Analytics = require('@segment/analytics.js-core').constructor;
 var sandbox = require('@segment/clear-env');
 var tester = require('@segment/analytics.js-integration-tester');
-var tick = require('next-tick');
 var Optimizely = require('../lib/');
 
 var mockOptimizelyDataObject = function() {
@@ -13,20 +12,25 @@ var mockOptimizelyDataObject = function() {
       1: { name: 'MultiVariate Test' },
       2: { name: 'Inactive Test' },
       11: { name: 'Redirect Test' } },
-    variations: { 22: { name: 'Redirect Variation' } },
-    sections: { 1: { name: 'Section 1', variation_ids: [123, 456, 789] } },
+    variations: {
+      22: { name: 'Redirect Variation', code: '' },
+      123: { name: 'Variation #123', code: '' },
+      789: { name: 'Var 789', code: '' },
+      44: { name: 'Var 44', code: '' }
+    },
+    sections: { 1: { name: 'Section 1', variation_ids: [123, 22, 789] } },
     state: {
       activeExperiments: [0, 1],
       variationNamesMap: {
         0: 'Variation1',
-        1: 'Variation2',
+        1: ['Variation #123', 'Redirect Variation', 'Var 789'], // TODO: confirm this is valid data format
         2: 'Inactive Variation',
         11: 'Redirect Variation' },
-      variationIdsMap: { 0: [123], 1: [123, 456, 789], 11: [22], 2: [44] },
+      variationIdsMap: { 0: [123], 1: [123, 22, 789], 11: [22], 2: [44] },
       redirectExperiment: {
         variationId: 22,
         experimentId: 11,
-        referrer: ''
+        referrer: 'google.com'
       }
     }
   };
@@ -56,11 +60,13 @@ describe('Optimizely', function() {
   describe('before loading', function() {
     beforeEach(function() {
       analytics.stub(optimizely, 'load');
-      analytics.stub(optimizely, 'replay');
-      analytics.stub(optimizely, 'roots');
+      analytics.stub(optimizely, 'sendClassicDataToSegment');
+      analytics.stub(optimizely, 'sendNewDataToSegment');
+      analytics.stub(optimizely, 'setEffectiveReferrer');
+      analytics.stub(window, 'initOptimizelyIntegration');
     });
 
-    describe('#initialize defaults', function() {
+    describe('#initialize', function() {
       beforeEach(function(done) {
         analytics.stub(window.optimizely, 'push');
         analytics.once('ready', done);
@@ -69,17 +75,12 @@ describe('Optimizely', function() {
         analytics.page();
       });
 
-      it('should call #replay by default', function(done) {
-        tick(function() {
-          analytics.called(optimizely.replay);
-          done();
-        });
-      });
-
-      it('should not call #roots by default', function(done) {
-        tick(function() {
-          analytics.didNotCall(optimizely.roots);
-          done();
+      // FIXME
+      it.skip('should call initOptimizelyIntegration', function() {
+        analytics.called(window.initOptimizelyIntegration, {
+          referrerOverride: optimizely.setEffectiveReferrer,
+          sendExperimentData: optimizely.sendClassicDataToSegment,
+          sendCampaignData: optimizely.sendNewDataToSegment
         });
       });
 
