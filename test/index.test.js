@@ -205,9 +205,8 @@ describe('Optimizely', function() {
       });
 
       it('should call initOptimizelyIntegration', function(done) {
-        tick(function() {
+        executeAsyncTest(done, function() {
           analytics.called(Optimizely.initOptimizelyIntegration);
-          done();
         });
       });
 
@@ -271,9 +270,8 @@ describe('Optimizely', function() {
         it('should not call setEffectiveReferrer for non redirect experiments', function(done) {
           // by default mock data has no redirect experiments active
           analytics.initialize();
-          tick(function() {
+          executeAsyncTest(done, function() {
             analytics.didNotCall(optimizely.setEffectiveReferrer);
-            done();
           });
         });
 
@@ -281,15 +279,14 @@ describe('Optimizely', function() {
           // enable redirect experiment
           window.optimizely.newMockData[2347102720].isActive = true;
           analytics.initialize();
-          tick(function() {
+          executeAsyncTest(done, function() {
             analytics.called(optimizely.setEffectiveReferrer, 'barstools.com');
-            done();
           });
         });
 
         it('should call sendNewDataToSegment for active Optimizely X campaigns', function(done) {
           analytics.initialize();
-          tick(function() {
+          executeAsyncTest(done, function() {
             analytics.calledTwice(optimizely.sendNewDataToSegment);
             analytics.deepEqual(optimizely.sendNewDataToSegment.args[0], [
               {
@@ -343,7 +340,6 @@ describe('Optimizely', function() {
                 visitorRedirected: false
               }
             ]);
-            done();
           });
         });
       });
@@ -359,7 +355,7 @@ describe('Optimizely', function() {
 
         it('should call both sendClassicDataToSegment and sendNewDataToSegment', function(done) {
           // we have two active experiments running in the mock data object for both versions
-          tick(function() {
+          executeAsyncTest(done, function() {
             analytics.calledTwice(optimizely.sendClassicDataToSegment);
             analytics.calledTwice(optimizely.sendNewDataToSegment);
             analytics.deepEqual(optimizely.sendClassicDataToSegment.args[0], [{
@@ -437,7 +433,6 @@ describe('Optimizely', function() {
                 visitorRedirected: false
               }
             ]);
-            done();
           });
         });
       });
@@ -466,9 +461,8 @@ describe('Optimizely', function() {
       });
 
       it('should set a global variable `window.optimizelyEffectiveReferrer`', function(done) {
-        tick(function() {
+        executeAsyncTest(done, function() {
           analytics.equal(window.optimizelyEffectiveReferrer, 'barstools.com');
-          done();
         });
       });
     });
@@ -506,8 +500,6 @@ describe('Optimizely', function() {
     });
 
     describe('#options.listen', function() {
-      // TODO: why is this?
-      // NOTE: these tests will hang if the `.track()` or `.identify()` call's params do not match
       beforeEach(function() {
         optimizely.options.listen = true;
         analytics.stub(analytics, 'track');
@@ -517,7 +509,7 @@ describe('Optimizely', function() {
         // activate standard experiment
         window.optimizely.data.state.activeExperiments = ['0'];
         analytics.initialize();
-        tick(function() {
+        executeAsyncTest(done, function() {
           analytics.deepEqual(analytics.track.args[0], [
             'Experiment Viewed',
             {
@@ -528,7 +520,6 @@ describe('Optimizely', function() {
             },
             { integration: optimizelyContext }
           ]);
-          done();
         });
       });
 
@@ -536,19 +527,18 @@ describe('Optimizely', function() {
         // activate multivariate experiment
         window.optimizely.data.state.activeExperiments = ['1'];
         analytics.initialize();
-        tick(function() {
+        executeAsyncTest(done, function() {
           analytics.deepEqual(analytics.track.args[0], [
             'Experiment Viewed',
             {
               experimentId: '1',
               experimentName: 'MultiVariate Test',
               variationId: '123,22,789',
-              variationName: 'Variation #123,Redirect Variation,Var 789',
+              variationName: 'Variation #123, Redirect Variation, Var 789',
               sectionName: 'Section 1'
             },
             { integration: optimizelyContext }
           ]);
-          done();
         });
       });
 
@@ -556,7 +546,7 @@ describe('Optimizely', function() {
         // activate redirect experiment
         window.optimizely.data.state.activeExperiments = ['11'];
         analytics.initialize();
-        tick(function() {
+        executeAsyncTest(done, function() {
           analytics.deepEqual(analytics.track.args[0], [
             'Experiment Viewed',
             {
@@ -568,7 +558,6 @@ describe('Optimizely', function() {
             },
             { integration: optimizelyContext }
           ]);
-          done();
         });
       });
 
@@ -577,7 +566,7 @@ describe('Optimizely', function() {
         optimizely.options.nonInteraction = true;
         window.optimizely.data.state.activeExperiments = ['0'];
         analytics.initialize();
-        tick(function() {
+        executeAsyncTest(done, function() {
           analytics.deepEqual(analytics.track.args[0], [
             'Experiment Viewed',
             {
@@ -589,7 +578,6 @@ describe('Optimizely', function() {
             },
             { integration: optimizelyContext }
           ]);
-          done();
         });
       });
 
@@ -597,9 +585,8 @@ describe('Optimizely', function() {
         // disable all active experiments
         window.optimizely.data.state.activeExperiments = [];
         analytics.initialize();
-        tick(function() {
+        executeAsyncTest(done, function() {
           analytics.didNotCall(analytics.track);
-          done();
         });
       });
     });
@@ -640,11 +627,11 @@ describe('Optimizely', function() {
 
       it('should send standard active campaign data via `.track()`', function(done) {
         // Mock data by default has two active campaign/experiments.
-        // Going to leave just the one that was created as a standard 
+        // Going to leave just the one that was created as a standard
         // experiment inside Optimizely X (not campaign)
         window.optimizely.newMockData[7547101713].isActive = false;
         analytics.initialize();
-        tick(function() {
+        executeAsyncTest(done, function() {
           analytics.deepEqual(analytics.track.args[0], [
             'Experiment Viewed',
             {
@@ -659,7 +646,6 @@ describe('Optimizely', function() {
             },
             { integration: optimizelyContext }
           ]);
-          done();
         });
       });
 
@@ -668,7 +654,7 @@ describe('Optimizely', function() {
         // Going to leave just the personalized campaign
         window.optimizely.newMockData[2542102702].isActive = false;
         analytics.initialize();
-        tick(function() {
+        executeAsyncTest(done, function() {
           analytics.deepEqual(analytics.track.args[0], [
             'Experiment Viewed',
             {
@@ -683,7 +669,6 @@ describe('Optimizely', function() {
             },
             { integration: optimizelyContext }
           ]);
-          done();
         });
       });
 
@@ -693,7 +678,7 @@ describe('Optimizely', function() {
         window.optimizely.newMockData[7547101713].isActive = false;
         window.optimizely.newMockData[2542102702].isActive = false;
         analytics.initialize();
-        tick(function() {
+        executeAsyncTest(done, function() {
           analytics.deepEqual(analytics.track.args[0], [
             'Experiment Viewed',
             {
@@ -709,7 +694,6 @@ describe('Optimizely', function() {
             },
             { integration: optimizelyContext }
           ]);
-          done();
         });
       });
 
@@ -719,7 +703,7 @@ describe('Optimizely', function() {
         window.optimizely.newMockData[2542102702] = false;
         optimizely.options.nonInteraction = true;
         analytics.initialize();
-        tick(function() {
+        executeAsyncTest(done, function() {
           analytics.deepEqual(analytics.track.args[0], [
             'Experiment Viewed',
             {
@@ -735,7 +719,6 @@ describe('Optimizely', function() {
             },
             { integration: optimizelyContext }
           ]);
-          done();
         });
       });
 
@@ -745,9 +728,8 @@ describe('Optimizely', function() {
         window.optimizely.newMockData[7547101713].isActive = false;
         window.optimizely.newMockData[2542102702].isActive = false;
         analytics.initialize();
-        tick(function() {
+        executeAsyncTest(done, function() {
           analytics.didNotCall(analytics.track);
-          done();
         });
       });
     });
@@ -801,3 +783,22 @@ describe('Optimizely', function() {
     });
   });
 });
+
+/*
+ * execute AsyncTest
+ *
+ * Prevent tests from hanging if deepEqual fails inside `tick`
+ * @api private
+ * @param {Function} done cb
+ * @param {Function} function that runs test
+ */
+function executeAsyncTest(done, test) {
+  tick(function() {
+    try {
+      test();
+      done();
+    } catch (e) {
+      done(e);
+    }
+  });
+}
