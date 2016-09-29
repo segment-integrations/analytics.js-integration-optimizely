@@ -546,7 +546,7 @@ describe('Optimizely', function() {
               variationName: 'Variation #123,Redirect Variation,Var 789',
               sectionName: 'Section 1'
             },
-            { integration: optimizelyContext },
+            { integration: optimizelyContext }
           ]);
           done();
         });
@@ -661,7 +661,6 @@ describe('Optimizely', function() {
           ]);
           done();
         });
-
       });
 
       it('should send personalized campaign data via `.track()`', function(done) {
@@ -738,7 +737,6 @@ describe('Optimizely', function() {
           ]);
           done();
         });
-
       });
 
       it('should not send inactive experiments', function(done) {
