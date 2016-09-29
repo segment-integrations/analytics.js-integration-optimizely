@@ -1,3 +1,9 @@
+3.0.0 / 2016-09-29
+==================
+
+  * Support Classic, X, and Both versions of Optimizely
+  * Support sending all types of activations (conditional, manual, immediate) to Segment
+
 2.0.0 / 2016-06-21
 ==================
 
