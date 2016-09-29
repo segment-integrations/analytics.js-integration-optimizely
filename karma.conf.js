@@ -5,7 +5,6 @@ module.exports = function(config) {
   config.set({
     files: [
       // https://segment.com/docs/integrations/optimizely/#with-javascript
-      'http://cdn.optimizely.com/js/170430035.js',
       'test/**/*.test.js'
     ],
 
