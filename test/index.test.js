@@ -27,19 +27,19 @@ var mockOptimizelyClassicDataObject = function() {
       789: { name: 'Var 789', code: '' },
       44: { name: 'Var 44', code: '' }
     },
-    sections: { 1: { name: 'Section 1', variation_ids: [123, 22, 789] } },
+    sections: { 1: { name: 'Section 1', variation_ids: ['123', '22', '789'] } },
     state: {
-      activeExperiments: [0, 11],
+      activeExperiments: ['0', '11'],
       variationNamesMap: {
         0: 'Variation #123',
         1: 'Variation #123, Redirect Variation, Var 789', // this is the data format
         2: 'Inactive Variation',
         11: 'Redirect Variation'
       },
-      variationIdsMap: { 0: [123], 1: [123, 22, 789], 11: [22], 2: [44] },
+      variationIdsMap: { 0: ['123'], 1: ['123', '22', '789'], 11: ['22'], 2: ['44'] },
       redirectExperiment: {
-        variationId: 22,
-        experimentId: 11,
+        variationId: '22',
+        experimentId: '11',
         referrer: 'google.com'
       }
     }
@@ -103,10 +103,14 @@ var mockOptimizelyXDataObject = function() {
         {
           name: 'Penthouse 6',
           id: '8888222438'
+        },
+        {
+          name: 'Fam Yolo',
+          id: '1234567890'
         }
       ],
-      campaignName: 'Millionaire Pact',
-      id: '7222777766',
+      campaignName: 'Coding Bootcamp', // Experiments created in Optimizely X will set this the same as experiment name
+      id: '7222777766', // but this will be different than experiment id
       experiment: {
         id: '1111182111',
         name: 'Coding Bootcamp'
@@ -150,6 +154,12 @@ var mockOptimizelyXDataObject = function() {
 var mockBothOptimizelyDataObjects = function() {
   mockOptimizelyXDataObject();
   mockOptimizelyClassicDataObject();
+};
+
+// passed into context.integration (not context.integrations!) for all track calls for some reason
+var optimizelyContext = {
+  name: 'optimizely',
+  version: '2.0.0'
 };
 
 describe('Optimizely', function() {
@@ -287,9 +297,13 @@ describe('Optimizely', function() {
                   {
                     name: 'Penthouse 6',
                     id: '8888222438'
+                  },
+                  {
+                    name: 'Fam Yolo',
+                    id: '1234567890'
                   }
                 ],
-                campaignName: 'Millionaire Pact',
+                campaignName: 'Coding Bootcamp',
                 id: '7222777766',
                 experiment: {
                   id: '1111182111',
@@ -377,9 +391,13 @@ describe('Optimizely', function() {
                   {
                     name: 'Penthouse 6',
                     id: '8888222438'
+                  },
+                  {
+                    name: 'Fam Yolo',
+                    id: '1234567890'
                   }
                 ],
-                campaignName: 'Millionaire Pact',
+                campaignName: 'Coding Bootcamp',
                 id: '7222777766',
                 experiment: {
                   id: '1111182111',
@@ -460,7 +478,7 @@ describe('Optimizely', function() {
     // It will always either just call one or the other
   });
 
-  describe.only('#sendClassicDataToSegment', function() {
+  describe('#sendClassicDataToSegment', function() {
     beforeEach(function() {
       mockOptimizelyClassicDataObject();
     });
@@ -490,10 +508,6 @@ describe('Optimizely', function() {
     describe('#options.listen', function() {
       // TODO: why is this?
       // NOTE: these tests will hang if the `.track()` or `.identify()` call's params do not match
-      var optimizelyContext = {
-        name: 'optimizely',
-        version: '2.0.0'
-      };
       beforeEach(function() {
         optimizely.options.listen = true;
         analytics.stub(analytics, 'track');
@@ -501,13 +515,13 @@ describe('Optimizely', function() {
 
       it('should send each standard active experiment data via `.track()`', function(done) {
         // activate standard experiment
-        window.optimizely.data.state.activeExperiments = [0];
+        window.optimizely.data.state.activeExperiments = ['0'];
         analytics.initialize();
         tick(function() {
           analytics.deepEqual(analytics.track.args[0], [
             'Experiment Viewed',
             {
-              experimentId: 0,
+              experimentId: '0',
               experimentName: 'Test',
               variationId: '123',
               variationName: 'Variation #123'
@@ -520,13 +534,13 @@ describe('Optimizely', function() {
 
       it('should send multivariate active experiment data via `.track()`', function(done) {
         // activate multivariate experiment
-        window.optimizely.data.state.activeExperiments = [1];
+        window.optimizely.data.state.activeExperiments = ['1'];
         analytics.initialize();
         tick(function() {
           analytics.deepEqual(analytics.track.args[0], [
             'Experiment Viewed',
             {
-              experimentId: 1,
+              experimentId: '1',
               experimentName: 'MultiVariate Test',
               variationId: '123,22,789',
               variationName: 'Variation #123,Redirect Variation,Var 789',
@@ -540,13 +554,13 @@ describe('Optimizely', function() {
 
       it('should send redirect active experiment data via `.track()`', function(done) {
         // activate redirect experiment
-        window.optimizely.data.state.activeExperiments = [11];
+        window.optimizely.data.state.activeExperiments = ['11'];
         analytics.initialize();
         tick(function() {
           analytics.deepEqual(analytics.track.args[0], [
             'Experiment Viewed',
             {
-              experimentId: 11,
+              experimentId: '11',
               experimentName: 'Redirect Test',
               referrer: 'google.com',
               variationId: '22',
@@ -561,13 +575,13 @@ describe('Optimizely', function() {
       it('should send Google\'s nonInteraction flag via `.track()`', function(done) {
         // flip the nonInteraction option on and activate standard experiment
         optimizely.options.nonInteraction = true;
-        window.optimizely.data.state.activeExperiments = [0];
+        window.optimizely.data.state.activeExperiments = ['0'];
         analytics.initialize();
         tick(function() {
           analytics.deepEqual(analytics.track.args[0], [
             'Experiment Viewed',
             {
-              experimentId: 0,
+              experimentId: '0',
               experimentName: 'Test',
               variationId: '123',
               variationName: 'Variation #123',
@@ -592,15 +606,156 @@ describe('Optimizely', function() {
   });
 
   describe('#sendNewDataToSegment', function() {
-    it('should send via `.identify()`');
-    it('should send standard active experiment data via `.track()`');
-    it('should send personalized campaign data via `.track()`');
-    it('should send redirect experiment data via `.track()`');
-    it('should send Google\'s nonInteraction flag via `.track()`');
-    it('should not send inactive experiments');
+    beforeEach(function() {
+      mockOptimizelyXDataObject();
+    });
+
+    describe('#options.variations', function() {
+      beforeEach(function(done) {
+        optimizely.options.variations = true;
+        analytics.stub(analytics, 'identify');
+        analytics.initialize();
+        tick(done);
+      });
+
+      it('should send active campaign via `.identify()`', function() {
+        // Since we have two experiments in `window.optimizely.data.state.activeExperiments`
+        // This test proves the breaking changes for the option (it used to send both experiment data in one
+        // `.identify()` call)
+        analytics.calledTwice(analytics.identify);
+        analytics.deepEqual(analytics.identify.args[0], [{
+          'Experiment: Coding Bootcamp': 'Variation DBC'
+        }]);
+        analytics.deepEqual(analytics.identify.args[1], [{
+          'Experiment: Worlds Group Stage': 'Variation #1'
+        }]);
+      });
+    });
+
+    describe('#options.listen', function() {
+      beforeEach(function() {
+        optimizely.options.listen = true;
+        analytics.stub(analytics, 'track');
+      });
+
+      it('should send standard active campaign data via `.track()`', function(done) {
+        // Mock data by default has two active campaign/experiments.
+        // Going to leave just the one that was created as a standard 
+        // experiment inside Optimizely X (not campaign)
+        window.optimizely.newMockData[7547101713].isActive = false;
+        analytics.initialize();
+        tick(function() {
+          analytics.deepEqual(analytics.track.args[0], [
+            'Experiment Viewed',
+            {
+              campaignName: 'Coding Bootcamp',
+              campaignId: '7222777766',
+              experimentId: '1111182111',
+              experimentName: 'Coding Bootcamp',
+              variationId: '7333333333',
+              variationName: 'Variation DBC',
+              audienceId: '8888222438,1234567890',
+              audienceName: 'Penthouse 6,Fam Yolo'
+            },
+            { integration: optimizelyContext }
+          ]);
+          done();
+        });
+
+      });
+
+      it('should send personalized campaign data via `.track()`', function(done) {
+        // Mock data by default has two active campaign/experiments.
+        // Going to leave just the personalized campaign
+        window.optimizely.newMockData[2542102702].isActive = false;
+        analytics.initialize();
+        tick(function() {
+          analytics.deepEqual(analytics.track.args[0], [
+            'Experiment Viewed',
+            {
+              campaignName: 'URF',
+              campaignId: '7547101713',
+              experimentId: '7547682694',
+              experimentName: 'Worlds Group Stage',
+              variationId: '7557950020',
+              variationName: 'Variation #1',
+              audienceId: '7527565438',
+              audienceName: 'Trust Tree'
+            },
+            { integration: optimizelyContext }
+          ]);
+          done();
+        });
+      });
+
+      it('should send redirect experiment data via `.track()`', function(done) {
+        // Enable just the campaign with redirect variation
+        window.optimizely.newMockData[2347102720].isActive = true;
+        window.optimizely.newMockData[7547101713].isActive = false;
+        window.optimizely.newMockData[2542102702].isActive = false;
+        analytics.initialize();
+        tick(function() {
+          analytics.deepEqual(analytics.track.args[0], [
+            'Experiment Viewed',
+            {
+              campaignName: 'Get Rich or Die Tryin',
+              campaignId: '2347102720',
+              experimentId: '7522212694',
+              experimentName: 'Wells Fargo Scam',
+              variationId: '7551111120',
+              variationName: 'Variation Corruption #1884',
+              audienceId: '7100568438',
+              audienceName: 'Middle Class',
+              referrer: 'barstools.com'
+            },
+            { integration: optimizelyContext }
+          ]);
+          done();
+        });
+      });
+
+      it('should send Google\'s nonInteraction flag via `.track()`', function(done) {
+        // Mock data has two active campaigns running
+        // For convenience, we'll disable one of them
+        window.optimizely.newMockData[2542102702] = false;
+        optimizely.options.nonInteraction = true;
+        analytics.initialize();
+        tick(function() {
+          analytics.deepEqual(analytics.track.args[0], [
+            'Experiment Viewed',
+            {
+              campaignName: 'URF',
+              campaignId: '7547101713',
+              experimentId: '7547682694',
+              experimentName: 'Worlds Group Stage',
+              variationId: '7557950020',
+              variationName: 'Variation #1',
+              audienceId: '7527565438',
+              audienceName: 'Trust Tree',
+              nonInteraction: 1
+            },
+            { integration: optimizelyContext }
+          ]);
+          done();
+        });
+
+      });
+
+      it('should not send inactive experiments', function(done) {
+        // deactivate all experiments
+        window.optimizely.newMockData[2347102720].isActive = false;
+        window.optimizely.newMockData[7547101713].isActive = false;
+        window.optimizely.newMockData[2542102702].isActive = false;
+        analytics.initialize();
+        tick(function() {
+          analytics.didNotCall(analytics.track);
+          done();
+        });
+      });
+    });
   });
 
-  describe.skip('after loading', function() {
+  describe('after loading', function() {
     beforeEach(function(done) {
       analytics.once('ready', done);
       analytics.initialize();
