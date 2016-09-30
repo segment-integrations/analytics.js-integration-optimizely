@@ -1,3 +1,9 @@
+
+3.0.1 / 2016-09-30
+==================
+
+  * Fix logic to correctly track redirect experiments
+
 3.0.0 / 2016-09-29
 ==================
 
