@@ -544,7 +544,7 @@ describe('Optimizely', function() {
 
       it('should send redirect active experiment data via `.track()`', function(done) {
         // activate redirect experiment
-        window.optimizely.data.state.activeExperiments = ['11'];
+        window.optimizely.data.state.activeExperiments = [];
         analytics.initialize();
         executeAsyncTest(done, function() {
           analytics.deepEqual(analytics.track.args[0], [
@@ -582,6 +582,8 @@ describe('Optimizely', function() {
       });
 
       it('should not send inactive experiments', function(done) {
+        // clear out the redirect experiment
+        window.optimizely.data.state.redirectExperiment = undefined;
         // disable all active experiments
         window.optimizely.data.state.activeExperiments = [];
         analytics.initialize();
