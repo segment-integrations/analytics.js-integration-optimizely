@@ -27,7 +27,7 @@ var mockOptimizelyClassicDataObject = function() {
       789: { name: 'Var 789', code: '' },
       44: { name: 'Var 44', code: '' }
     },
-    sections: { 1: { name: 'Section 1', variation_ids: ['123', '22', '789'] } },
+    sections: undefined, // we'll set this during multivariate test since that's when this is set by Optimizely's API
     state: {
       activeExperiments: ['0', '11'],
       variationNamesMap: {
@@ -245,7 +245,7 @@ describe('Optimizely', function() {
               id: '123',
               name: 'Variation #123'
             }],
-            section: undefined
+            sections: undefined
           }]);
           analytics.deepEqual(optimizely.sendClassicDataToSegment.args[1], [{
             experiment: {
@@ -257,7 +257,7 @@ describe('Optimizely', function() {
               id: '22',
               name: 'Redirect Variation'
             }],
-            section: undefined
+            sections: undefined
           }]);
         });
       });
@@ -367,7 +367,7 @@ describe('Optimizely', function() {
                 id: '123',
                 name: 'Variation #123'
               }],
-              section: undefined
+              sections: undefined
             }]);
             analytics.deepEqual(optimizely.sendClassicDataToSegment.args[1], [{
               experiment: {
@@ -379,7 +379,7 @@ describe('Optimizely', function() {
                 id: '22',
                 name: 'Redirect Variation'
               }],
-              section: undefined
+              sections: undefined
             }]);
             analytics.deepEqual(optimizely.sendNewDataToSegment.args[0], [
               {
@@ -524,8 +524,9 @@ describe('Optimizely', function() {
       });
 
       it('should send multivariate active experiment data via `.track()`', function(done) {
-        // activate multivariate experiment
+        // activate multivariate experiment and set section info
         window.optimizely.data.state.activeExperiments = ['1'];
+        window.optimizely.data.sections = { 123409: { name: 'Section 1', variation_ids: ['123', '22', '789'] } };
         analytics.initialize();
         executeAsyncTest(done, function() {
           analytics.deepEqual(analytics.track.args[0], [
@@ -535,7 +536,32 @@ describe('Optimizely', function() {
               experimentName: 'MultiVariate Test',
               variationId: '123,22,789',
               variationName: 'Variation #123, Redirect Variation, Var 789',
-              sectionName: 'Section 1'
+              sectionName: 'Section 1',
+              sectionId: '123409'
+            },
+            { integration: optimizelyContext }
+          ]);
+        });
+      });
+
+      it('should send multivariate active experiment with multiple section data via `.track()`', function(done) {
+        // activate multivariate experiment and set section info
+        window.optimizely.data.state.activeExperiments = ['1'];
+        window.optimizely.data.sections = {
+          112309: { name: 'Section 1', variation_ids: ['123'] },
+          111111: { name: 'Section 2', variation_ids: ['22', '789'] }
+        };
+        analytics.initialize();
+        executeAsyncTest(done, function() {
+          analytics.deepEqual(analytics.track.args[0], [
+            'Experiment Viewed',
+            {
+              experimentId: '1',
+              experimentName: 'MultiVariate Test',
+              variationId: '123,22,789',
+              variationName: 'Variation #123, Redirect Variation, Var 789',
+              sectionName: 'Section 1, Section 2',
+              sectionId: '112309,111111'
             },
             { integration: optimizelyContext }
           ]);
@@ -644,7 +670,7 @@ describe('Optimizely', function() {
               variationId: '7333333333',
               variationName: 'Variation DBC',
               audienceId: '8888222438,1234567890',
-              audienceName: 'Penthouse 6,Fam Yolo'
+              audienceName: 'Penthouse 6, Fam Yolo'
             },
             { integration: optimizelyContext }
           ]);
