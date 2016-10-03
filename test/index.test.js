@@ -525,6 +525,27 @@ describe('Optimizely', function() {
 
       it('should send multivariate active experiment data via `.track()`', function(done) {
         // activate multivariate experiment and set section info
+        window.optimizely.data.state.activeExperiments = ['0'];
+        window.optimizely.data.sections = { 123409: { name: 'Section 1', variation_ids: ['123'] } };
+        analytics.initialize();
+        executeAsyncTest(done, function() {
+          analytics.deepEqual(analytics.track.args[0], [
+            'Experiment Viewed',
+            {
+              experimentId: '0',
+              experimentName: 'Test',
+              variationId: '123',
+              variationName: 'Variation #123',
+              sectionName: 'Section 1',
+              sectionId: '123409'
+            },
+            { integration: optimizelyContext }
+          ]);
+        });
+      });
+
+      it('should dedupe sectionNames for multi section multivariate active experiment data via `.track()`', function(done) {
+        // activate multivariate experiment and set section info
         window.optimizely.data.state.activeExperiments = ['1'];
         window.optimizely.data.sections = { 123409: { name: 'Section 1', variation_ids: ['123', '22', '789'] } };
         analytics.initialize();
