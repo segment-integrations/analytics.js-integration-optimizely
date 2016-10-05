@@ -166,7 +166,7 @@ describe('Optimizely', function() {
   var analytics;
   var optimizely;
   var options = {
-    listen: true,
+    listen: false,
     variations: false,
     nonInteraction: false
   };
@@ -556,7 +556,7 @@ describe('Optimizely', function() {
               experimentId: '1',
               experimentName: 'MultiVariate Test',
               variationId: '123,22,789',
-              variationName: 'Variation #123, Redirect Variation, Var 789',
+              variationName: 'Redirect Variation, Var 789, Variation #123',
               sectionName: 'Section 1',
               sectionId: '123409'
             },
@@ -580,9 +580,9 @@ describe('Optimizely', function() {
               experimentId: '1',
               experimentName: 'MultiVariate Test',
               variationId: '123,22,789',
-              variationName: 'Variation #123, Redirect Variation, Var 789',
+              variationName: 'Redirect Variation, Var 789, Variation #123',
               sectionName: 'Section 1, Section 2',
-              sectionId: '112309,111111'
+              sectionId: '111111,112309'
             },
             { integration: optimizelyContext }
           ]);
@@ -592,6 +592,10 @@ describe('Optimizely', function() {
       it('should send redirect active experiment data via `.track()`', function(done) {
         // activate redirect experiment
         window.optimizely.data.state.activeExperiments = [];
+        var context = {
+          integration: optimizelyContext,
+          page: { referrer: 'google.com' }
+        };
         analytics.initialize();
         executeAsyncTest(done, function() {
           analytics.deepEqual(analytics.track.args[0], [
@@ -603,7 +607,7 @@ describe('Optimizely', function() {
               variationId: '22',
               variationName: 'Redirect Variation'
             },
-            { integration: optimizelyContext }
+            context
           ]);
         });
       });
@@ -690,8 +694,8 @@ describe('Optimizely', function() {
               experimentName: 'Coding Bootcamp',
               variationId: '7333333333',
               variationName: 'Variation DBC',
-              audienceId: '8888222438,1234567890',
-              audienceName: 'Penthouse 6, Fam Yolo'
+              audienceId: '1234567890,8888222438',
+              audienceName: 'Fam Yolo, Penthouse 6'
             },
             { integration: optimizelyContext }
           ]);
@@ -726,6 +730,10 @@ describe('Optimizely', function() {
         window.optimizely.newMockData[2347102720].isActive = true;
         window.optimizely.newMockData[7547101713].isActive = false;
         window.optimizely.newMockData[2542102702].isActive = false;
+        var context = {
+          integration: optimizelyContext,
+          page: { referrer: 'barstools.com' }
+        };
         analytics.initialize();
         executeAsyncTest(done, function() {
           analytics.deepEqual(analytics.track.args[0], [
@@ -741,7 +749,7 @@ describe('Optimizely', function() {
               audienceName: 'Middle Class',
               referrer: 'barstools.com'
             },
-            { integration: optimizelyContext }
+            context
           ]);
         });
       });
