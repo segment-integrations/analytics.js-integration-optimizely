@@ -821,6 +821,19 @@ describe('Optimizely', function() {
           revenue: 999
         }]);
       });
+
+      describe('the Optimizely X Fullstack JavaScript client is present', function() {
+        beforeEach(function() {
+          window.optimizelyClientInstance = {};
+          analytics.stub(window.optimizelyClientInstance, 'track');
+          analytics.identify('user1');
+        });
+
+        it('should send an event through the Optimizely X Fullstack JS SDK', function() {
+          analytics.track('event', { property: 'foo', revenue: 9.99 });
+          analytics.called(window.optimizelyClientInstance.track, 'event', 'user1', { property: 'foo' }, 999);
+        });
+      });
     });
 
     describe('#page', function() {
