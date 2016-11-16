@@ -826,12 +826,11 @@ describe('Optimizely', function() {
         beforeEach(function() {
           window.optimizelyClientInstance = {};
           analytics.stub(window.optimizelyClientInstance, 'track');
-          analytics.identify('user1');
         });
 
         it('should send an event through the Optimizely X Fullstack JS SDK', function() {
-          analytics.track('event', { property: 'foo', revenue: 9.99 });
-          analytics.called(window.optimizelyClientInstance.track, 'event', 'user1', { property: 'foo' }, 999);
+          analytics.track('event', { visitorId: 'user1', revenue: 9.99, property: 'foo' });
+          analytics.called(window.optimizelyClientInstance.track, 'event', 'user1', { property: 'foo', visitorId: 'user1', revenue: 9.99 }, 999);
         });
       });
     });
