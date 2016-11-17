@@ -829,8 +829,8 @@ describe('Optimizely', function() {
         });
 
         it('should send an event through the Optimizely X Fullstack JS SDK', function() {
-          analytics.track('event', { visitorId: 'user1', revenue: 9.99, property: 'foo' });
-          analytics.called(window.optimizelyClientInstance.track, 'event', 'user1', { property: 'foo', visitorId: 'user1', revenue: 9.99 }, 999);
+          analytics.track('event', { userId: 'user1', revenue: 9.99, property: 'foo' });
+          analytics.called(window.optimizelyClientInstance.track, 'event', 'user1', { property: 'foo', userId: 'user1', revenue: 9.99 }, 999);
         });
       });
     });
