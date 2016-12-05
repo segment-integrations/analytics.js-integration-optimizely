@@ -1,20 +1,23 @@
 
+3.1.0 / 2016-12-05
+==================
+
+  * Add integration for FullStack Javascript SDK for track calls
+
 3.0.4 / 2016-10-05
 ==================
 
   * Minor bug fix
 
-
 3.0.3 / 2016-10-05
 ==================
 
-  * Refactor code 
-
+  * Refactor code
 
 3.0.2 / 2016-10-05
 ==================
 
-  * Fix Section Names and Ids 
+  * Fix Section Names and Ids
 
 3.0.1 / 2016-09-30
 ==================
