@@ -854,12 +854,13 @@ describe('Optimizely', function() {
       });
 
       it('should send an event for a named page', function() {
+        var referrer = window.document.referrer;
         analytics.page('Home');
         analytics.called(window.optimizely.push, ['trackEvent', 'Viewed Home Page', {
           tags: {
             name: 'Home',
             path: '/context.html',
-            referrer: 'http://localhost:9876/?id=' + '<the page id>?',
+            referrer: referrer,
             search: '',
             title: '',
             url: 'http://localhost:9876/context.html'
@@ -868,13 +869,14 @@ describe('Optimizely', function() {
       });
 
       it('should send an event for a named and categorized page', function() {
+        var referrer = window.document.referrer;
         analytics.page('Blog', 'New Integration');
         analytics.called(window.optimizely.push, ['trackEvent', 'Viewed Blog New Integration Page', {
           tags: {
             name: 'New Integration',
             category: 'Blog',
             path: '/context.html',
-            referrer: 'http://localhost:9876/?id=' + + '<the page id>?',
+            referrer: referrer,
             search: '',
             title: '',
             url: 'http://localhost:9876/context.html'
