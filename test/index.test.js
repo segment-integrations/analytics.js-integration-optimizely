@@ -807,18 +807,19 @@ describe('Optimizely', function() {
 
       it('should send an event', function() {
         analytics.track('event');
-        analytics.called(window.optimizely.push, ['trackEvent', 'event', {}]);
+        analytics.called(window.optimizely.push, ['trackEvent', 'event', { tags: {} }]);
       });
 
-      it('shouldn\'t send properties it can\'t process', function() {
-        analytics.track('event', { property: true });
-        analytics.called(window.optimizely.push, ['trackEvent', 'event', {}]);
+      it('should send all additional properties along as tags', function() {
+        analytics.track('event', { id: 'c00lHa$h', name: 'jerry' });
+        analytics.called(window.optimizely.push, ['trackEvent', 'event', { tags: { id: 'c00lHa$h', name: 'jerry' } }]);
       });
 
       it('should change revenue to cents', function() {
         analytics.track('event', { revenue: 9.99 });
         analytics.called(window.optimizely.push, ['trackEvent', 'event', {
-          revenue: 999
+          revenue: 999,
+          tags: {}
         }]);
       });
 
@@ -854,12 +855,31 @@ describe('Optimizely', function() {
 
       it('should send an event for a named page', function() {
         analytics.page('Home');
-        analytics.called(window.optimizely.push, ['trackEvent', 'Viewed Home Page', {}]);
+        analytics.called(window.optimizely.push, ['trackEvent', 'Viewed Home Page', {
+          tags: {
+            name: 'Home',
+            path: '/context.html',
+            referrer: 'http://localhost:9876/?id=' + '<the page id>?',
+            search: '',
+            title: '',
+            url: 'http://localhost:9876/context.html'
+          }
+        }]);
       });
 
       it('should send an event for a named and categorized page', function() {
         analytics.page('Blog', 'New Integration');
-        analytics.called(window.optimizely.push, ['trackEvent', 'Viewed Blog New Integration Page', {}]);
+        analytics.called(window.optimizely.push, ['trackEvent', 'Viewed Blog New Integration Page', {
+          tags: {
+            name: 'New Integration',
+            category: 'Blog',
+            path: '/context.html',
+            referrer: 'http://localhost:9876/?id=' + + '<the page id>?',
+            search: '',
+            title: '',
+            url: 'http://localhost:9876/context.html'
+          }
+        }]);
       });
     });
   });
