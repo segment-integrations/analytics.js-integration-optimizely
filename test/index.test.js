@@ -807,19 +807,29 @@ describe('Optimizely', function() {
 
       it('should send an event', function() {
         analytics.track('event');
-        analytics.called(window.optimizely.push, ['trackEvent', 'event', {}]);
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'event',
+          tags: {}
+        });
       });
 
-      it('shouldn\'t send properties it can\'t process', function() {
-        analytics.track('event', { property: true });
-        analytics.called(window.optimizely.push, ['trackEvent', 'event', {}]);
+      it('should send all additional properties along as tags', function() {
+        analytics.track('event', { id: 'c00lHa$h', name: 'jerry' });
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'event',
+          tags: { id: 'c00lHa$h', name: 'jerry' }
+        });
       });
 
-      it('should change revenue to cents', function() {
+      it('should change revenue to cents and include in tags', function() {
         analytics.track('event', { revenue: 9.99 });
-        analytics.called(window.optimizely.push, ['trackEvent', 'event', {
-          revenue: 999
-        }]);
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'event',
+          tags: { revenue: 999 }
+        });
       });
 
       describe('the Optimizely X Fullstack JavaScript client is present', function() {
@@ -853,13 +863,38 @@ describe('Optimizely', function() {
       });
 
       it('should send an event for a named page', function() {
+        var referrer = window.document.referrer;
         analytics.page('Home');
-        analytics.called(window.optimizely.push, ['trackEvent', 'Viewed Home Page', {}]);
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'Viewed Home Page',
+          tags: {
+            name: 'Home',
+            path: '/context.html',
+            referrer: referrer,
+            search: '',
+            title: '',
+            url: 'http://localhost:9876/context.html'
+          }
+        });
       });
 
       it('should send an event for a named and categorized page', function() {
+        var referrer = window.document.referrer;
         analytics.page('Blog', 'New Integration');
-        analytics.called(window.optimizely.push, ['trackEvent', 'Viewed Blog New Integration Page', {}]);
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'Viewed Blog New Integration Page',
+          tags: {
+            name: 'New Integration',
+            category: 'Blog',
+            path: '/context.html',
+            referrer: referrer,
+            search: '',
+            title: '',
+            url: 'http://localhost:9876/context.html'
+          }
+        });
       });
     });
   });

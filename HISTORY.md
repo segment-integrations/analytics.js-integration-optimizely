@@ -1,4 +1,10 @@
 
+3.1.1 / 2017-01-17
+==================
+
+  * Update Web track call to use Optimizely X new-style API call (works with Classic and X)
+  * Include tags property in Web track call as defined by track.properties()
+
 3.1.0 / 2016-12-05
 ==================
 
