@@ -1,3 +1,8 @@
+3.2.0 / 2017-03-16
+==================
+
+  * Include event tags property in the Optimizely X Fullstack track call as defined by track.properties()
+  * Use user traits as user attributes instead of event properties
 
 3.1.1 / 2017-01-17
 ==================
