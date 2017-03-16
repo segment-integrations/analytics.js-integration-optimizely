@@ -842,17 +842,15 @@ describe('Optimizely', function() {
           window.optimizelyClientInstance.track.restore();
         });
 
-        // @TODO: please enable once we fix `track.userId()`, which at the moment returns undefined
-        //        even though `this.analytics.user().id()` is populated with the user id after calling `identify`
-        // it('should send an event through the Optimizely X Fullstack JS SDK using the logged in user', function() {
-        //   analytics.identify('user1');
-        //   analytics.track('event', { revenue: 9.99, property: 'foo' });
-        //   analytics.called(window.optimizelyClientInstance.track, 'event', 'user1', { property: 'foo', revenue: 9.99 }, 999);
-        // });
+        it('should send an event through the Optimizely X Fullstack JS SDK using the logged in user', function() {
+          analytics.identify('user1');
+          analytics.track('event', { purchasePrice: 9.99, property: 'foo' });
+          analytics.called(window.optimizelyClientInstance.track, 'event', 'user1', {}, { purchasePrice: 9.99, property: 'foo' });
+        });
 
         it('should send an event through the Optimizely X Fullstack JS SDK using the user provider user id', function() {
-          analytics.track('event', { revenue: 9.99, property: 'foo' }, { Optimizely: { userId: 'user1' } });
-          analytics.called(window.optimizelyClientInstance.track, 'event', 'user1', { property: 'foo', revenue: 9.99 }, 999);
+          analytics.track('event', { purchasePrice: 9.99, property: 'foo' }, { Optimizely: { userId: 'user1', attributes: { country: 'usa' } } });
+          analytics.called(window.optimizelyClientInstance.track, 'event', 'user1', { country: 'usa' }, { property: 'foo', purchasePrice: 9.99 });
         });
       });
     });
