@@ -832,6 +832,15 @@ describe('Optimizely', function() {
         });
       });
 
+      it('should round the revenue value to an integer value if passed in as a floating point number', function() {
+        analytics.track('event', { revenue: 534.3099999999999 });
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'event',
+          tags: { revenue: 53431 }
+        });
+      });
+
       describe('the Optimizely X Fullstack JavaScript client is present', function() {
         beforeEach(function() {
           window.optimizelyClientInstance = {};
