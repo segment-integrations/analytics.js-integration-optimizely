@@ -499,6 +499,42 @@ describe('Optimizely', function() {
       });
     });
 
+    describe('#options.sendRevenueOnlyForOrderCompleted', function() {
+      beforeEach(function() {
+        analytics.stub(window.optimizely, 'push');
+      });
+
+      it('should send revenue only on Order Completed if onlySendRevenueOnOrderCompleted is enabled', function() {
+        optimizely.options.sendRevenueOnlyForOrderCompleted = true;
+        analytics.initialize();
+        analytics.track('Order Completed', {
+          revenue: 9.99
+        });
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'Order Completed',
+          tags: {
+            revenue: 999
+          }
+        });
+      });
+
+      it('should default to sending revenue on events with properties.revenue', function() {
+        analytics.initialize();
+        analytics.track('Checkout Started', {
+          revenue: 9.99
+        });
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'Checkout Started',
+          tags: {
+            revenue: 999
+          }
+        });
+      });
+    });
+
+
     describe('#options.listen', function() {
       beforeEach(function() {
         optimizely.options.listen = true;
@@ -669,6 +705,41 @@ describe('Optimizely', function() {
         analytics.deepEqual(analytics.identify.args[1], [{
           'Experiment: Worlds Group Stage': 'Variation #1'
         }]);
+      });
+    });
+
+    describe('#options.sendRevenueOnlyForOrderCompleted', function() {
+      beforeEach(function() {
+        analytics.stub(window.optimizely, 'push');
+      });
+
+      it('should send revenue only on Order Completed if onlySendRevenueOnOrderCompleted is enabled', function() {
+        optimizely.options.sendRevenueOnlyForOrderCompleted = true;
+        analytics.initialize();
+        analytics.track('Order Completed', {
+          revenue: 9.99
+        });
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'Order Completed',
+          tags: {
+            revenue: 999
+          }
+        });
+      });
+
+      it('should default to sending revenue on events with properties.revenue', function() {
+        analytics.initialize();
+        analytics.track('Checkout Started', {
+          revenue: 9.99
+        });
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'Checkout Started',
+          tags: {
+            revenue: 999
+          }
+        });
       });
     });
 
