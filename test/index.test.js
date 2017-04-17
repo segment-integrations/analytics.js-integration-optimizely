@@ -504,7 +504,19 @@ describe('Optimizely', function() {
         analytics.stub(window.optimizely, 'push');
       });
 
-      it('should send revenue only on Order Completed if onlySendRevenueOnOrderCompleted is enabled', function() {
+      it('should not include revenue on a non Order Completed event if `onlySendRevenueOnOrderCompleted` is enabled', function() {
+        analytics.initialize();
+        analytics.track('Order Updated', {
+          revenue: 25
+        });
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'Order Updated',
+          tags: {}
+        });
+      });
+
+      it('should send revenue only on Order Completed if `onlySendRevenueOnOrderCompleted` is enabled', function() {
         analytics.initialize();
         analytics.track('Order Completed', {
           revenue: 9.99
@@ -711,6 +723,18 @@ describe('Optimizely', function() {
     describe('#options.sendRevenueOnlyForOrderCompleted', function() {
       beforeEach(function() {
         analytics.stub(window.optimizely, 'push');
+      });
+
+      it('should not include revenue on a non Order Completed event if `onlySendRevenueOnOrderCompleted` is enabled', function() {
+        analytics.initialize();
+        analytics.track('Order Updated', {
+          revenue: 25
+        });
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'Order Updated',
+          tags: {}
+        });
       });
 
       it('should send revenue only on Order Completed if `onlySendRevenueOnOrderCompleted` is enabled', function() {
