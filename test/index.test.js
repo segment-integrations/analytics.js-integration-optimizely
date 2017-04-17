@@ -499,6 +499,54 @@ describe('Optimizely', function() {
       });
     });
 
+    describe('#options.sendRevenueOnlyForOrderCompleted', function() {
+      beforeEach(function() {
+        analytics.stub(window.optimizely, 'push');
+      });
+
+      it('should not include revenue on a non Order Completed event if `onlySendRevenueOnOrderCompleted` is enabled', function() {
+        analytics.initialize();
+        analytics.track('Order Updated', {
+          revenue: 25
+        });
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'Order Updated',
+          tags: {}
+        });
+      });
+
+      it('should send revenue only on Order Completed if `onlySendRevenueOnOrderCompleted` is enabled', function() {
+        analytics.initialize();
+        analytics.track('Order Completed', {
+          revenue: 9.99
+        });
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'Order Completed',
+          tags: {
+            revenue: 999
+          }
+        });
+      });
+
+      it('should send revenue on all events with properties.revenue if `onlySendRevenueOnOrderCompleted` is disabled', function() {
+        optimizely.options.sendRevenueOnlyForOrderCompleted = false;
+        analytics.initialize();
+        analytics.track('Checkout Started', {
+          revenue: 9.99
+        });
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'Checkout Started',
+          tags: {
+            revenue: 999
+          }
+        });
+      });
+    });
+
+
     describe('#options.listen', function() {
       beforeEach(function() {
         optimizely.options.listen = true;
@@ -672,6 +720,54 @@ describe('Optimizely', function() {
       });
     });
 
+    describe('#options.sendRevenueOnlyForOrderCompleted', function() {
+      beforeEach(function() {
+        analytics.stub(window.optimizely, 'push');
+      });
+
+      it('should not include revenue on a non Order Completed event if `onlySendRevenueOnOrderCompleted` is enabled', function() {
+        analytics.initialize();
+        analytics.track('Order Updated', {
+          revenue: 25
+        });
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'Order Updated',
+          tags: {}
+        });
+      });
+
+      it('should send revenue only on Order Completed if `onlySendRevenueOnOrderCompleted` is enabled', function() {
+        optimizely.options.sendRevenueOnlyForOrderCompleted = true;
+        analytics.initialize();
+        analytics.track('Order Completed', {
+          revenue: 9.99
+        });
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'Order Completed',
+          tags: {
+            revenue: 999
+          }
+        });
+      });
+
+      it('should send revenue on all events with properties.revenue if `onlySendRevenueOnOrderCompleted` is disabled', function() {
+        optimizely.options.sendRevenueOnlyForOrderCompleted = false;
+        analytics.initialize();
+        analytics.track('Checkout Started', {
+          revenue: 9.99
+        });
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'Checkout Started',
+          tags: {
+            revenue: 999
+          }
+        });
+      });
+    });
+
     describe('#options.listen', function() {
       beforeEach(function() {
         optimizely.options.listen = true;
@@ -824,19 +920,19 @@ describe('Optimizely', function() {
       });
 
       it('should change revenue to cents and include in tags', function() {
-        analytics.track('event', { revenue: 9.99 });
+        analytics.track('Order Completed', { revenue: 9.99 });
         analytics.called(window.optimizely.push, {
           type: 'event',
-          eventName: 'event',
+          eventName: 'Order Completed',
           tags: { revenue: 999 }
         });
       });
 
       it('should round the revenue value to an integer value if passed in as a floating point number', function() {
-        analytics.track('event', { revenue: 534.3099999999999 });
+        analytics.track('Order Completed', { revenue: 534.3099999999999 });
         analytics.called(window.optimizely.push, {
           type: 'event',
-          eventName: 'event',
+          eventName: 'Order Completed',
           tags: { revenue: 53431 }
         });
       });
@@ -860,6 +956,22 @@ describe('Optimizely', function() {
         it('should send an event through the Optimizely X Fullstack JS SDK using the user provider user id', function() {
           analytics.track('event', { purchasePrice: 9.99, property: 'foo' }, { Optimizely: { userId: 'user1', attributes: { country: 'usa' } } });
           analytics.called(window.optimizelyClientInstance.track, 'event', 'user1', { country: 'usa' }, { property: 'foo', purchasePrice: 9.99 });
+        });
+
+        it('should send revenue on `Order Completed` through the Optimizely X Fullstack JS SDK and `properites.revenue` is passed', function() {
+          analytics.track('Order Completed', { purchasePrice: 9.99, property: 'foo', revenue: 1.99 }, { Optimizely: { userId: 'user1', attributes: { country: 'usa' } } });
+          analytics.called(window.optimizelyClientInstance.track, 'Order Completed', 'user1', { country: 'usa' }, { property: 'foo', purchasePrice: 9.99, revenue: 199 });
+        });
+
+        it('should not default to sending revenue through the Optimizely X Fullstack JS SDK on non `Order Completed` events and `properites.revenue` is passed', function() {
+          analytics.track('event', { purchasePrice: 9.99, property: 'foo', revenue: 1.99 }, { Optimizely: { userId: 'user1', attributes: { country: 'usa' } } });
+          analytics.called(window.optimizelyClientInstance.track, 'event', 'user1', { country: 'usa' }, { property: 'foo', purchasePrice: 9.99 });
+        });
+
+        it('should send revenue through the Optimizely X Fullstack JS SDK on all events if `sendRevenueOnlyForOrderCompleted` is disabled and `properites.revenue` is passed', function() {
+          optimizely.options.sendRevenueOnlyForOrderCompleted = false;
+          analytics.track('event', { purchasePrice: 9.99, property: 'foo', revenue: 1.99 }, { Optimizely: { userId: 'user1', attributes: { country: 'usa' } } });
+          analytics.called(window.optimizelyClientInstance.track, 'event', 'user1', { country: 'usa' }, { property: 'foo', purchasePrice: 9.99, revenue: 199 });
         });
       });
     });
