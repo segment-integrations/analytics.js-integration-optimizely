@@ -1,3 +1,8 @@
+3.3.0 / 2017-04-17
+==================
+
+  * Adds option `onlySendRevenueOnOrderCompleted` to send revenue only on `Order Completed` events, which will default to `true` for new users  
+
 3.2.1 / 2017-03-23
 ==================
 
