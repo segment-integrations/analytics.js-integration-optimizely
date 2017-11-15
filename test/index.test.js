@@ -69,9 +69,9 @@ var mockOptimizelyXDataObject = function() {
         id: '7551111120',
         name: 'Variation Corruption #1884'
       },
+      isInCampaignHoldback: false,      
       // these are returned by real Optimizely API but will not be send to integrations
       isActive: false,
-      isInCampaignHoldback: false,
       reason: undefined,
       visitorRedirected: true
     },
@@ -92,9 +92,9 @@ var mockOptimizelyXDataObject = function() {
         id: '7557950020',
         name: 'Variation #1'
       },
+      isInCampaignHoldback: true,      
       // these are returned by real Optimizely API but will not be send to integrations
       isActive: true,
-      isInCampaignHoldback: false,
       reason: undefined,
       visitorRedirected: false
     },
@@ -119,9 +119,9 @@ var mockOptimizelyXDataObject = function() {
         id: '7333333333',
         name: 'Variation DBC'
       },
+      isInCampaignHoldback: false,      
       // these are returned by real Optimizely API but will not be send to integrations
       isActive: true,
-      isInCampaignHoldback: false,
       reason: undefined,
       visitorRedirected: false
     }
@@ -335,7 +335,7 @@ describe('Optimizely', function() {
                   name: 'Variation #1'
                 },
                 isActive: true,
-                isInCampaignHoldback: false,
+                isInCampaignHoldback: true,
                 reason: undefined,
                 visitorRedirected: false
               }
@@ -428,7 +428,7 @@ describe('Optimizely', function() {
                   name: 'Variation #1'
                 },
                 isActive: true,
-                isInCampaignHoldback: false,
+                isInCampaignHoldback: true,
                 reason: undefined,
                 visitorRedirected: false
               }
@@ -791,7 +791,8 @@ describe('Optimizely', function() {
               variationId: '7333333333',
               variationName: 'Variation DBC',
               audienceId: '1234567890,8888222438',
-              audienceName: 'Fam Yolo, Penthouse 6'
+              audienceName: 'Fam Yolo, Penthouse 6',
+              isInCampaignHoldback: false
             },
             { integration: optimizelyContext }
           ]);
@@ -814,7 +815,8 @@ describe('Optimizely', function() {
               variationId: '7557950020',
               variationName: 'Variation #1',
               audienceId: '7527565438',
-              audienceName: 'Trust Tree'
+              audienceName: 'Trust Tree',
+              isInCampaignHoldback: true
             },
             { integration: optimizelyContext }
           ]);
@@ -843,7 +845,8 @@ describe('Optimizely', function() {
               variationName: 'Variation Corruption #1884',
               audienceId: '7100568438',
               audienceName: 'Middle Class',
-              referrer: 'barstools.com'
+              referrer: 'barstools.com',
+              isInCampaignHoldback: false
             },
             context
           ]);
@@ -868,7 +871,8 @@ describe('Optimizely', function() {
               variationName: 'Variation #1',
               audienceId: '7527565438',
               audienceName: 'Trust Tree',
-              nonInteraction: 1
+              nonInteraction: 1,
+              isInCampaignHoldback: true
             },
             { integration: optimizelyContext }
           ]);
