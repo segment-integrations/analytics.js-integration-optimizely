@@ -1,3 +1,8 @@
+3.3.2 / 2017-11-15
+==================
+
+  * Add 'isInCampaignHoldback' property to track calls
+
 3.3.1 / 2017-04-17
 ==================
 
