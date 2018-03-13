@@ -913,6 +913,15 @@ describe('Optimizely', function() {
           tags: {}
         });
       });
+      
+      it('should repace colons with underscore in eventName', function() {
+        analytics.track('event:foo:bar');
+        analytics.called(window.optimizely.push, {
+          type: 'event',
+          eventName: 'event_foo_bar',
+          tags: {}
+        });
+      });
 
       it('should send all additional properties along as tags', function() {
         analytics.track('event', { id: 'c00lHa$h', name: 'jerry' });
