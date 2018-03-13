@@ -1,3 +1,8 @@
+3.4.0 / 2018-03-13
+==================
+
+  * Replace colons in event names with underscores (#41)
+
 3.3.2 / 2017-11-15
 ==================
 
