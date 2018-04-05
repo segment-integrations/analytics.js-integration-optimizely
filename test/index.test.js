@@ -966,6 +966,12 @@ describe('Optimizely', function() {
           analytics.called(window.optimizelyClientInstance.track, 'event', 'user1', {}, { purchasePrice: 9.99, property: 'foo' });
         });
 
+        it('should replace colons with underscores for event names', function() {
+          analytics.identify('user1');
+          analytics.track('foo:bar:baz');
+          analytics.called(window.optimizelyClientInstance.track, 'foo_bar_baz', 'user1', {}, {});
+        });
+
         it('should send an event through the Optimizely X Fullstack JS SDK using the user provider user id', function() {
           analytics.track('event', { purchasePrice: 9.99, property: 'foo' }, { Optimizely: { userId: 'user1', attributes: { country: 'usa' } } });
           analytics.called(window.optimizelyClientInstance.track, 'event', 'user1', { country: 'usa' }, { property: 'foo', purchasePrice: 9.99 });
